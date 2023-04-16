@@ -1,7 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
 exports.GetAllRoles = void 0;
-const db_1 = require("../db");
+const db_1 = require('../db');
 const GetAllRoles = async () => {
     const client = await db_1.pool.connect();
     try {
@@ -14,16 +14,13 @@ const GetAllRoles = async () => {
             roles.push(role);
         }
         return roles;
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
-    }
-    finally {
+    } finally {
         client.release();
     }
 };

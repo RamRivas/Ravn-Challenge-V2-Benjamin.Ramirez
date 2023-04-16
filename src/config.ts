@@ -14,6 +14,5 @@ export const {
     connectionTimeoutMillis,
     SENDER_EMAIL,
     SENDER_PWD,
-    SALT_ROUNDS
+    SALT_ROUNDS,
 } = process.env;
-

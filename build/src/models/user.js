@@ -1,10 +1,15 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.signIn = exports.updateUsers = exports.filterUsers = exports.getAllUsers = exports.signUp = void 0;
-const db_1 = require("../db");
-const queryDesigner_1 = require("../services/queryDesigner");
-const bcrypt_1 = require("bcrypt");
-const general_1 = require("../services/general");
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.signIn =
+    exports.updateUsers =
+    exports.filterUsers =
+    exports.getAllUsers =
+    exports.signUp =
+        void 0;
+const db_1 = require('../db');
+const queryDesigner_1 = require('../services/queryDesigner');
+const bcrypt_1 = require('bcrypt');
+const general_1 = require('../services/general');
 const signUp = async (userToInsert) => {
     const client = await db_1.pool.connect();
     try {
@@ -18,17 +23,14 @@ const signUp = async (userToInsert) => {
         const result = await client.query(prepQuery);
         await client.query('COMMIT');
         return result;
-    }
-    catch (error) {
+    } catch (error) {
         await client.query('ROLLBACK');
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
-    }
-    finally {
+    } finally {
         client.release();
     }
 };
@@ -45,16 +47,13 @@ const getAllUsers = async () => {
             users.push(user);
         }
         return users;
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
-    }
-    finally {
+    } finally {
         client.release();
     }
 };
@@ -62,7 +61,12 @@ exports.getAllUsers = getAllUsers;
 const filterUsers = async (filters, operation) => {
     const client = await db_1.pool.connect();
     try {
-        const query = (0, queryDesigner_1.prepareSelectQuery)('user', `filterUsers${operation}`, undefined, filters);
+        const query = (0, queryDesigner_1.prepareSelectQuery)(
+            'user',
+            `filterUsers${operation}`,
+            undefined,
+            filters
+        );
         const result = await client.query(query);
         const users = [];
         for (const element of result.rows) {
@@ -72,16 +76,13 @@ const filterUsers = async (filters, operation) => {
             users.push(user);
         }
         return users;
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
-    }
-    finally {
+    } finally {
         client.release();
     }
 };
@@ -100,10 +101,14 @@ const updateUsers = async (updateValuesPerUser, users, operation) => {
                     operator: '=',
                 },
             ];
-            const userForUpdate = updateValuesPerUser.find((current) => current.user_id === user_id);
+            const userForUpdate = updateValuesPerUser.find(
+                (current) => current.user_id === user_id
+            );
             delete userForUpdate?.user_id;
             if (!userForUpdate)
-                throw new Error('There are no arguments given for updating the given user');
+                throw new Error(
+                    'There are no arguments given for updating the given user'
+                );
             const updateValues = [];
             for (const [key, value] of Object.entries(userForUpdate)) {
                 const kvPair = {
@@ -112,24 +117,26 @@ const updateUsers = async (updateValuesPerUser, users, operation) => {
                 };
                 updateValues.push(kvPair);
             }
-            const preparedUpdateQuery = (0, queryDesigner_1.prepareUpdateQuery)(updateValues, filters, 'user', `updateUsers${operation}`);
+            const preparedUpdateQuery = (0, queryDesigner_1.prepareUpdateQuery)(
+                updateValues,
+                filters,
+                'user',
+                `updateUsers${operation}`
+            );
             // console.log(preparedUpdateQuery);
             const result = await client.query(preparedUpdateQuery);
             result.rowCount > 0 && rowsAffected();
         }
         await client.query('COMMIT');
         return rowsAffected();
-    }
-    catch (error) {
+    } catch (error) {
         await client.query('ROLLBACK');
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
-    }
-    finally {
+    } finally {
         client.release();
     }
 };
@@ -145,7 +152,12 @@ const signIn = async (credentials) => {
                 value: user_name,
             },
         ];
-        const query = (0, queryDesigner_1.prepareSelectQuery)('user', 'Login', ['user_name', 'pwd', 'forgot_pwd'], filters);
+        const query = (0, queryDesigner_1.prepareSelectQuery)(
+            'user',
+            'Login',
+            ['user_name', 'pwd', 'forgot_pwd'],
+            filters
+        );
         const result = await client.query(query);
         const signInResponse = {
             success: false,
@@ -153,19 +165,20 @@ const signIn = async (credentials) => {
             forgot_pwd: 0,
         };
         if (result.rowCount > 0) {
-            const pwdMatch = await (0, bcrypt_1.compare)(pwd, result.rows[0].pwd);
+            const pwdMatch = await (0, bcrypt_1.compare)(
+                pwd,
+                result.rows[0].pwd
+            );
             if (pwdMatch) {
                 signInResponse.success = true;
                 signInResponse.message = 'Now you are logged in';
                 signInResponse.forgot_pwd = result.rows[0].forgot_pwd;
-            }
-            else {
+            } else {
                 signInResponse.success = false;
                 signInResponse.message = 'The given password is incorrect';
                 delete signInResponse.forgot_pwd;
             }
-        }
-        else {
+        } else {
             signInResponse.success = false;
             signInResponse.message =
                 // eslint-disable-next-line quotes
@@ -173,12 +186,10 @@ const signIn = async (credentials) => {
             delete signInResponse.forgot_pwd;
         }
         return signInResponse;
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             throw error;
-        }
-        else {
+        } else {
             throw new Error('Unexpected error');
         }
     }

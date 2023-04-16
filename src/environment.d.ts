@@ -12,7 +12,7 @@ declare global {
             connectionTimeoutMillis: number;
             SENDER_EMAIL: string;
             SENDER_PWD: string;
-            SALT_ROUNDS: number
+            SALT_ROUNDS: number;
         }
     }
 }

@@ -1,34 +1,66 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.forgotPassword = exports.signInController = exports.signUpController = void 0;
-const user_1 = require("../models/user");
-const user_2 = require("../services/user");
-const crypto_1 = require("crypto");
-const mailer = __importStar(require("../services/mailer"));
-const encrypter_1 = require("../services/encrypter");
+'use strict';
+var __createBinding =
+    (this && this.__createBinding) ||
+    (Object.create
+        ? function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k;
+              var desc = Object.getOwnPropertyDescriptor(m, k);
+              if (
+                  !desc ||
+                  ('get' in desc
+                      ? !m.__esModule
+                      : desc.writable || desc.configurable)
+              ) {
+                  desc = {
+                      enumerable: true,
+                      get: function () {
+                          return m[k];
+                      },
+                  };
+              }
+              Object.defineProperty(o, k2, desc);
+          }
+        : function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k;
+              o[k2] = m[k];
+          });
+var __setModuleDefault =
+    (this && this.__setModuleDefault) ||
+    (Object.create
+        ? function (o, v) {
+              Object.defineProperty(o, 'default', {
+                  enumerable: true,
+                  value: v,
+              });
+          }
+        : function (o, v) {
+              o['default'] = v;
+          });
+var __importStar =
+    (this && this.__importStar) ||
+    function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null)
+            for (var k in mod)
+                if (
+                    k !== 'default' &&
+                    Object.prototype.hasOwnProperty.call(mod, k)
+                )
+                    __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.forgotPassword =
+    exports.signInController =
+    exports.signUpController =
+        void 0;
+const user_1 = require('../models/user');
+const user_2 = require('../services/user');
+const crypto_1 = require('crypto');
+const mailer = __importStar(require('../services/mailer'));
+const encrypter_1 = require('../services/encrypter');
 const signUpController = async (req, res) => {
     try {
         const newUser = await (0, user_2.parseUserForInsertion)(req.body);
@@ -38,12 +70,10 @@ const signUpController = async (req, res) => {
             message: 'You have signed up in "Tiny Store"',
             data: insertedUser.rows,
         });
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             res.status(400).send(error.message);
-        }
-        else {
+        } else {
             res.status(400).send('Unexpected error');
         }
     }
@@ -60,12 +90,10 @@ const signInController = async (req, res) => {
                 signInResponse,
             },
         });
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             res.status(400).send(error.message);
-        }
-        else {
+        } else {
             res.status(400).send('Unexpected error');
         }
     }
@@ -89,7 +117,11 @@ const forgotPassword = async (req, res) => {
                 pwd: await (0, encrypter_1.encrypt)(provisionalPwd),
                 forgot_pwd: 1,
             };
-            const rowsAffected = await (0, user_1.updateUsers)([updateValues], [user], 'ForgotPassword');
+            const rowsAffected = await (0, user_1.updateUsers)(
+                [updateValues],
+                [user],
+                'ForgotPassword'
+            );
             const body = {
                 from: process.env.SENDER_EMAIL,
                 to: req.body.mail_address,
@@ -102,16 +134,15 @@ const forgotPassword = async (req, res) => {
                 message: 'A provisional password was sent to your mail',
                 rowsAffected,
             });
+        } else {
+            throw new Error(
+                'There are no users who match with the given filters'
+            );
         }
-        else {
-            throw new Error('There are no users who match with the given filters');
-        }
-    }
-    catch (error) {
+    } catch (error) {
         if (error instanceof Error) {
             res.status(400).send(error.message);
-        }
-        else {
+        } else {
             res.status(400).send('Unexpected error');
         }
     }

@@ -1,6 +1,11 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.rowsAffectedCounter = exports.isBuffer = exports.isInteger = exports.isDate = exports.isString = void 0;
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.rowsAffectedCounter =
+    exports.isBuffer =
+    exports.isInteger =
+    exports.isDate =
+    exports.isString =
+        void 0;
 const isString = (stringFromRequest) => {
     return typeof stringFromRequest === 'string';
 };
