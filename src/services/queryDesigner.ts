@@ -14,12 +14,12 @@ export const filtersCallback = (
     return index + 1 === filters.length
         ? `"${key}"${operator}$${!paramIndex ? index + 1 : paramIndex}`
         : `"${key}"${operator}$${
-              !paramIndex ? index + 1 : paramIndex
-          } ${logicOperator} ${filtersCallback(
-              filters,
-              index + 1,
-              !paramIndex ? undefined : paramIndex + 1
-          )}`;
+            !paramIndex ? index + 1 : paramIndex
+        } ${logicOperator} ${filtersCallback(
+            filters,
+            index + 1,
+            !paramIndex ? undefined : paramIndex + 1
+        )}`;
 };
 
 export const columnsCallback = (
@@ -30,10 +30,10 @@ export const columnsCallback = (
     return index + 1 === columns.length
         ? `"${tableName}"."${columns[index]}"`
         : `"${tableName}"."${columns[index]}", ${columnsCallback(
-              columns,
-              index + 1,
-              tableName
-          )}`;
+            columns,
+            index + 1,
+            tableName
+        )}`;
 };
 
 export const joinsCallback = (
@@ -43,13 +43,13 @@ export const joinsCallback = (
     const { joinType, tableName, filters } = joins[index];
     return index + 1 === joins.length
         ? `${joinType} JOIN "${tableName}" ON ${joinFiltersCallback(
-              filters,
-              0
-          )} ${joinsCallback(joins, index + 1)}`
+            filters,
+            0
+        )} ${joinsCallback(joins, index + 1)}`
         : `${joinType} JOIN "${tableName}" ON ${joinFiltersCallback(
-              filters,
-              0
-          )} `;
+            filters,
+            0
+        )} `;
 };
 
 export const joinFiltersCallback = (
@@ -60,9 +60,9 @@ export const joinFiltersCallback = (
     return index + 1 === filters.length
         ? `"${key}"${operator}${value}`
         : `"${key}"${operator}${value} ${logicOperator} ${joinFiltersCallback(
-              filters,
-              index + 1
-          )}`;
+            filters,
+            index + 1
+        )}`;
 };
 
 export const prepareSelectQuery = (
