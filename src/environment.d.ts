@@ -3,13 +3,13 @@ declare global {
         interface ProcessEnv {
             PORT: string;
             CTX: string;
-            host: string;
-            user: string;
-            password: string;
-            database: string;
-            max: number;
-            idleTimeoutMillis: number;
-            connectionTimeoutMillis: number;
+            HOST: string;
+            USER: string;
+            PASSWORD: string;
+            DATABASE: string;
+            MAX: number;
+            IDLETIMEOUTMILLIS: number;
+            CONNECTIONTIMEOUTMILLIS: number;
             SENDER_EMAIL: string;
             SENDER_PWD: string;
             SALT_ROUNDS: number;
