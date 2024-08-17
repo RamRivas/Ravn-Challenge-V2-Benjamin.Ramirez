@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model endpoint {
+  endpoint_id          Int                    @id @default(autoincrement())
+  endpoint_name        String                 @db.VarChar(200)
+  endpoint_role_method endpoint_role_method[]
+}
+
+model endpoint_role_method {
+  endpoint_id Int
+  role_id     Int
+  method_id   Int
+  endpoint    endpoint    @relation(fields: [endpoint_id], references: [endpoint_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_endpoint_fk")
+  html_method html_method @relation(fields: [method_id], references: [method_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_method_fk")
+  role        role        @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_role_fk")
+
+  @@id([endpoint_id, role_id, method_id])
+}
+
+model html_method {
+  method_id            Int                    @id @default(autoincrement())
+  method_name          String                 @db.VarChar(200)
+  endpoint_role_method endpoint_role_method[]
+}
+
+model role {
+  role_id              Int                    @id @default(autoincrement())
+  role_name            String                 @db.VarChar(200)
+  endpoint_role_method endpoint_role_method[]
+  user_role            user_role[]
+}
+
+model token {
+  token_id      Int       @id @default(autoincrement())
+  refresh_token String
+  token_status  String    @default("1") @db.Bit(1)
+  creation_date DateTime  @default(now()) @db.Timestamp(6)
+  user_id       Int
+  destroy_date  DateTime? @db.Timestamp(6)
+  user          user      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user {
+  user_id      Int         @id @default(autoincrement())
+  user_name    String      @db.VarChar(200)
+  pwd          String
+  role_id      Int
+  forgot_pwd   String      @default("0") @db.Bit(1)
+  mail_address String?
+  token        token[]
+  user_role    user_role[]
+}
+
+model user_role {
+  user_id Int
+  role_id Int
+  role    role @relation(fields: [role_id], references: [role_id], onUpdate: NoAction)
+  user    user @relation(fields: [user_id], references: [user_id], onUpdate: NoAction)
+
+  @@id([user_id, role_id], map: "user_role_pk")
+}

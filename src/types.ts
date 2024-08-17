@@ -6,10 +6,19 @@ export interface Role {
 export interface User {
     user_id: number;
     user_name: string;
-    mail_address: string;
+    mail_address?: string;
     pwd: string;
     role: Role;
-    forgot_pwd?: number;
+    forgot_pwd?: string;
+}
+
+export interface SignUpResult {
+    user_id: number;
+    user_name: string;
+    mail_address: string | null;
+    pwd: string;
+    role_id: number;
+    forgot_pwd?: string;
 }
 
 export type UserForInsertion = Omit<User, 'user_id' | 'role'> & {

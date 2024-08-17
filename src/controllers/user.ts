@@ -15,7 +15,7 @@ export const signUpController = async (req: Request, res: Response) => {
         res.status(200).json({
             code: 200,
             message: 'You have signed up in "Tiny Store"',
-            data: insertedUser.rows,
+            data: insertedUser,
         });
     } catch (error) {
         if (error instanceof Error) {
@@ -66,7 +66,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
             const updateValues: Partial<User> = {
                 user_id: user.user_id,
                 pwd: await encrypt(provisionalPwd),
-                forgot_pwd: 1,
+                forgot_pwd: '1',
             };
 
             const rowsAffected: number = await updateUsers(

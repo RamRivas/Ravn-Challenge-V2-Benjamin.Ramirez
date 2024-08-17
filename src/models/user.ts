@@ -6,6 +6,7 @@ import {
     UserForSignIn,
     SignInResponse,
     KeyValuePair,
+    SignUpResult,
 } from '../types';
 import { pool } from '../db';
 import { PoolClient, QueryResult } from 'pg';
@@ -15,35 +16,29 @@ import {
 } from '../services/queryDesigner';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const signUp = async (
     userToInsert: UserForInsertion
-): Promise<QueryResult> => {
-    const client: PoolClient = await pool.connect();
+): Promise<SignUpResult> => {
     try {
-        await client.query('BEGIN');
-        const userValues: Array<any> = Object.values(userToInsert);
+        return await prisma.$transaction( async ( tx ) => {
+            const result = await tx.user.create( {
+                data: {
+                    ...userToInsert
+                }
+            } );
 
-        const prepQuery: PreparedQuery = {
-            name: 'signUp',
-            text: 'INSERT INTO "user" (user_name, mail_address, pwd, role_id) VALUES ($1, $2, $3, $4) RETURNING user_id',
-            values: [...userValues],
-        };
-
-        const result: QueryResult = await client.query(prepQuery);
-
-        await client.query('COMMIT');
-
-        return result;
+            return result;
+        } );
     } catch (error) {
-        await client.query('ROLLBACK');
         if (error instanceof Error) {
             throw error;
         } else {
             throw new Error('Unexpected error');
         }
-    } finally {
-        client.release();
     }
 };
 
