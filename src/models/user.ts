@@ -47,7 +47,7 @@ export const getAllUsers = async () : Promise<user[]> => {
 
 export const filterUsers = async (
     filter: Partial<User>
-): Promise<Array<User>> => {
+): Promise<Array<user>> => {
     try {
         return await prisma.user.findMany( {
             where: {
