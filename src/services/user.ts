@@ -1,6 +1,5 @@
 import { filterUsers } from '../models/user';
 import {
-    FilterParameter,
     User,
     UserForInsertion,
     UserForSignIn,
@@ -47,16 +46,12 @@ export const isNotAnExistingUserName = async (
     usernameFromRequest: string
 ): Promise<boolean> => {
     try {
-        const filters: Array<FilterParameter> = [
-            {
-                key: 'user_name',
-                operator: '=',
-                value: usernameFromRequest,
-            },
-        ];
+        const filters: Partial<User> = {
+            user_name: usernameFromRequest
+        };
+
         const users: Array<User> = await filterUsers(
-            filters,
-            'ExistingUsernameLookup'
+            filters
         );
 
         return users.length === 0;
@@ -76,7 +71,7 @@ export const isACorrectEmailAddress = (
         console.log(emailAddressFromRequest);
         // eslint-disable-next-line no-useless-escape
         if (
-            !/^\w+([\.-]?\\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(
+            !/^\w+([\\.-]?\\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(
                 emailAddressFromRequest
             )
         ) {

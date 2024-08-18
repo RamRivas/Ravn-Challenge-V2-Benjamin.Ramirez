@@ -1,7 +1,7 @@
 import { filterUsers, signIn, signUp, updateUsers } from '../models/user';
 import { Request, Response } from 'express';
 import { parseUserForInsertion, parseUserForSignIn } from '../services/user';
-import { FilterParameter, SignInResponse, User, UserForSignIn } from '../types';
+import { SignInResponse, User, UserForSignIn } from '../types';
 import { randomBytes } from 'crypto';
 import * as mailer from '../services/mailer';
 import { Options } from 'nodemailer/lib/mailer';
@@ -49,17 +49,18 @@ export const signInController = async (req: Request, res: Response) => {
 
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
-        const filters: Array<FilterParameter> = [
-            {
-                key: 'mail_address',
-                value: req.body.mail_address,
-                operator: '=',
-            },
-        ];
+        const {
+            body: {
+                mail_address
+            }
+        } = req;
+        const filter: Partial<User> = {
+            mail_address,
+        };
 
         const provisionalPwd = randomBytes(8).toString('hex');
 
-        const users: Array<User> = await filterUsers(filters, 'ForgotPassword');
+        const users: Array<User> = await filterUsers(filter);
 
         if (users.length > 0) {
             const user: User = users[0];
@@ -70,9 +71,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
             };
 
             const rowsAffected: number = await updateUsers(
-                [updateValues],
-                [user],
-                'ForgotPassword'
+                [updateValues]
             );
 
             const body: Options = {

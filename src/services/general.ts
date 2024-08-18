@@ -14,10 +14,13 @@ export const isBuffer = (bufferFromRequest: any): boolean => {
     return Buffer.isBuffer(bufferFromRequest);
 };
 
-export const rowsAffectedCounter = () => {
-    let rowsAffected = 0;
+export const rowsAffectedCounter = (counter: number) => {
     return (): number => {
-        rowsAffected += 1;
-        return rowsAffected;
+        counter += 1;
+        return counter;
     };
+};
+
+export const isValidJSON = ( possibleJson: string ): boolean => {
+    return Boolean( JSON.parse( possibleJson ) );
 };

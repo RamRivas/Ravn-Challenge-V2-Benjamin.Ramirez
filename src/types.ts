@@ -6,33 +6,22 @@ export interface Role {
 export interface User {
     user_id: number;
     user_name: string;
-    mail_address?: string;
-    pwd: string;
-    role: Role;
-    forgot_pwd?: string;
-}
-
-export interface SignUpResult {
-    user_id: number;
-    user_name: string;
     mail_address: string | null;
     pwd: string;
     role_id: number;
     forgot_pwd?: string;
 }
 
-export type UserForInsertion = Omit<User, 'user_id' | 'role'> & {
-    role_id: number;
-};
+export type UserForInsertion = Omit<User, 'user_id'>;
 
-export type UserForSignIn = Omit<User, 'user_id' | 'role' | 'mail_address'>;
+export type UserForSignIn = Omit<User, 'user_id' | 'role_id' | 'mail_address'>;
 
 // export type UserForUpdate = Pick<User, 'user_id'> & { updateValues: Array<KeyValuePair> }
 
 export type SignInResponse = {
     success: boolean;
     message: string;
-    forgot_pwd?: number;
+    forgot_pwd?: string;
 };
 
 export enum LogicOperator {

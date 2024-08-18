@@ -1,28 +1,19 @@
 import {
     UserForInsertion,
-    PreparedQuery,
     User,
-    FilterParameter,
     UserForSignIn,
-    SignInResponse,
-    KeyValuePair,
-    SignUpResult,
+    SignInResponse
 } from '../types';
-import { pool } from '../db';
-import { PoolClient, QueryResult } from 'pg';
-import {
-    prepareSelectQuery,
-    prepareUpdateQuery,
-} from '../services/queryDesigner';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
-import { PrismaClient } from '@prisma/client';
+import { modelCatchResolver, transactionResolver } from '../services/resolver';
+import { PrismaClient, user } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export const signUp = async (
     userToInsert: UserForInsertion
-): Promise<SignUpResult> => {
+): Promise<user> => {
     try {
         return await prisma.$transaction( async ( tx ) => {
             const result = await tx.user.create( {
@@ -31,7 +22,37 @@ export const signUp = async (
                 }
             } );
 
-            return result;
+            return transactionResolver( { insertedUser: result } );
+        } );
+    } catch (error) {
+        if (error instanceof Error) {
+            return modelCatchResolver( error );
+        } else {
+            throw new Error('Unexpected error');
+        }
+    }
+};
+
+export const getAllUsers = async () : Promise<user[]> => {
+    try {
+        return await prisma.user.findMany();
+    } catch (error) {
+        if (error instanceof Error) {
+            throw error;
+        } else {
+            throw new Error('Unexpected error');
+        }
+    }
+};
+
+export const filterUsers = async (
+    filter: Partial<User>
+): Promise<Array<User>> => {
+    try {
+        return await prisma.user.findMany( {
+            where: {
+                ...filter
+            }
         } );
     } catch (error) {
         if (error instanceof Error) {
@@ -42,174 +63,86 @@ export const signUp = async (
     }
 };
 
-export const getAllUsers = async () => {
-    const client: PoolClient = await pool.connect();
-    try {
-        const result: QueryResult = await client.query('SELECT * FROM "user"');
-        const users: Array<User> = [];
-        for (const element of result.rows) {
-            const user: User = {
-                ...element,
-            };
-            users.push(user);
-        }
-        return users;
-    } catch (error) {
-        if (error instanceof Error) {
-            throw error;
-        } else {
-            throw new Error('Unexpected error');
-        }
-    } finally {
-        client.release();
-    }
-};
-
-export const filterUsers = async (
-    filters: Array<FilterParameter>,
-    operation: string
-): Promise<Array<User>> => {
-    const client: PoolClient = await pool.connect();
-    try {
-        const query = prepareSelectQuery(
-            'user',
-            `filterUsers${operation}`,
-            undefined,
-            filters
-        );
-        const result: QueryResult = await client.query(query);
-        const users: Array<User> = [];
-        for (const element of result.rows) {
-            const user: User = {
-                ...element,
-            };
-            users.push(user);
-        }
-        return users;
-    } catch (error) {
-        if (error instanceof Error) {
-            throw error;
-        } else {
-            throw new Error('Unexpected error');
-        }
-    } finally {
-        client.release();
-    }
-};
-
 export const updateUsers = async (
-    updateValuesPerUser: Array<Partial<User>>,
-    users: Array<User>,
-    operation: string
+    users: Array<Partial<User>>,
 ): Promise<number> => {
-    const client: PoolClient = await pool.connect();
     try {
-        const rowsAffected = rowsAffectedCounter();
-        client.query('BEGIN');
-        for (const element of users) {
-            const { user_id } = element;
-            const filters: Array<FilterParameter> = [
-                {
-                    key: 'user_id',
-                    value: user_id,
-                    operator: '=',
-                },
-            ];
+        const counter = 0;
+        const rowsAffected = rowsAffectedCounter( counter );
 
-            const userForUpdate: Partial<User> | undefined =
-                updateValuesPerUser.find(
-                    (current) => current.user_id === user_id
-                );
+        return await prisma.$transaction( async tx => {
+            for (const i in users) {
+                const element = users[ i ];
+                const { user_id } = element;
 
-            delete userForUpdate?.user_id;
+                delete element?.user_id;
 
-            if (!userForUpdate)
-                throw new Error(
-                    'There are no arguments given for updating the given user'
-                );
+                const updatedUser = await tx.user.update( {
+                    where: {
+                        user_id
+                    },
+                    data: {
+                        ...element
+                    }
+                } );
 
-            const updateValues: Array<KeyValuePair> = [];
-            for (const [key, value] of Object.entries(userForUpdate)) {
-                const kvPair: KeyValuePair = {
-                    key,
-                    value,
-                };
-                updateValues.push(kvPair);
+                if( updatedUser ) {
+                    rowsAffected();
+                }
             }
 
-            const preparedUpdateQuery: PreparedQuery = prepareUpdateQuery(
-                updateValues,
-                filters,
-                'user',
-                `updateUsers${operation}`
-            );
-            // console.log(preparedUpdateQuery);
-            const result: QueryResult = await client.query(preparedUpdateQuery);
-
-            result.rowCount > 0 && rowsAffected();
-        }
-
-        await client.query('COMMIT');
-        return rowsAffected();
+            return transactionResolver( { rowsAffected: counter } );
+        } );
     } catch (error) {
-        await client.query('ROLLBACK');
         if (error instanceof Error) {
             throw error;
         } else {
             throw new Error('Unexpected error');
         }
-    } finally {
-        client.release();
     }
 };
 
 export const signIn = async (
     credentials: UserForSignIn
 ): Promise<SignInResponse> => {
-    const client: PoolClient = await pool.connect();
     try {
-        const { user_name, pwd } = credentials;
-        const filters: Array<FilterParameter> = [
-            {
-                key: 'user_name',
-                operator: '=',
-                value: user_name,
-            },
-        ];
-        const query: PreparedQuery = prepareSelectQuery(
-            'user',
-            'Login',
-            ['user_name', 'pwd', 'forgot_pwd'],
-            filters
-        );
-        const result: QueryResult = await client.query(query);
+        return await prisma.$transaction( async tx => {
+            const { user_name, pwd } = credentials;
 
-        const signInResponse: SignInResponse = {
-            success: false,
-            message: '',
-            forgot_pwd: 0,
-        };
+            const result = await tx.user.findFirst( {
+                where: {
+                    user_name: user_name
+                }
+            } );
 
-        if (result.rowCount > 0) {
-            const pwdMatch = await compare(pwd, result.rows[0].pwd);
-            if (pwdMatch) {
-                signInResponse.success = true;
-                signInResponse.message = 'Now you are logged in';
-                signInResponse.forgot_pwd = result.rows[0].forgot_pwd;
+            const signInResponse: SignInResponse = {
+                success: false,
+                message: '',
+                forgot_pwd: '0',
+            };
+
+            if ( result ) {
+                const pwdMatch = await compare(pwd, result.pwd);
+                
+                if (pwdMatch) {
+                    signInResponse.success = true;
+                    signInResponse.message = 'Now you are logged in';
+                    signInResponse.forgot_pwd = result.forgot_pwd;
+                } else {
+                    signInResponse.success = false;
+                    signInResponse.message = 'The given password is incorrect';
+                    delete signInResponse.forgot_pwd;
+                }
             } else {
                 signInResponse.success = false;
-                signInResponse.message = 'The given password is incorrect';
+                signInResponse.message =
+                    // eslint-disable-next-line quotes
+                    "The given username doesn't exists in our database";
                 delete signInResponse.forgot_pwd;
             }
-        } else {
-            signInResponse.success = false;
-            signInResponse.message =
-                // eslint-disable-next-line quotes
-                "The given username doesn't exists in our database";
-            delete signInResponse.forgot_pwd;
-        }
-
-        return signInResponse;
+    
+            return signInResponse;
+        } );
     } catch (error) {
         if (error instanceof Error) {
             throw error;
