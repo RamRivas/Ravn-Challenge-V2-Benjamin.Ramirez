@@ -63,7 +63,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
         if (users.length > 0) {
             const user = users[0];
-            const updateValues: Partial<user> = {
+            const updateValues = {
                 user_id: user.user_id,
                 pwd: await encrypt(provisionalPwd),
                 forgot_pwd: '1',
@@ -71,7 +71,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
             const rowsAffected: number = await updateUsers([updateValues]);
 
-            const body: Options = {
+            const body = {
                 from: process.env.SENDER_EMAIL,
                 to: req.body.mail_address,
                 subject: 'Provisional Password',
