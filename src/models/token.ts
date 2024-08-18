@@ -34,12 +34,12 @@ const generateRefreshToken = (user: user): string => {
     }
 };
 
-export const getToken = ( user_id: number, refresh_token: string ) => {
+export const getToken = ( otherFilters: object, tokenP: Partial<token> = {} ) => {
     try {
         return prisma.token.findFirst( {
             where: {
-                user_id,
-                refresh_token
+                ...tokenP,
+                ...otherFilters
             }
         } );
     } catch (error) {
