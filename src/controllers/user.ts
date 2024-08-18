@@ -59,10 +59,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
         const provisionalPwd = randomBytes(8).toString('hex');
 
-        const users: Array<user> = await filterUsers(filter);
+        const users = await filterUsers(filter);
 
         if (users.length > 0) {
-            const user: user = users[0];
+            const user = users[0];
             const updateValues: Partial<user> = {
                 user_id: user.user_id,
                 pwd: await encrypt(provisionalPwd),
