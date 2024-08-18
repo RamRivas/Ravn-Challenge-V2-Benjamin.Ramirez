@@ -1,8 +1,8 @@
 import { token, user } from '@prisma/client';
 
-export type UserForInsertion = Omit<user, 'user_id'>;
+export type UserForInsertion = Omit<user, 'user_id' | 'forgot_pwd'>;
 
-export type UserForSignIn = Omit<user, 'user_id' | 'role_id' | 'mail_address'>;
+export type UserForSignIn = Omit<user, 'user_id' | 'role_id' | 'mail_address' | 'forgot_pwd'>;
 
 export type SignInResponse = {
     success: boolean;
@@ -10,7 +10,7 @@ export type SignInResponse = {
     forgot_pwd?: string;
 };
 
-export type TokenForInsertion = Omit<token, 'token_id' | 'token_status'>;
+export type TokenForInsertion = Omit<token, 'token_id' | 'token_status' | 'destroy_date'>;
 
 export type Credentials = {
     accessToken: string;

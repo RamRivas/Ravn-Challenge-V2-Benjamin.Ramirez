@@ -61,8 +61,7 @@ export const signUser = async (user: user): Promise<Credentials> => {
         const token = {
             refresh_token: refreshToken,
             creation_date: new Date(),
-            user_id: user.user_id,
-            destroy_date: null,
+            user_id: user.user_id
         };
 
         await insertToken(token);

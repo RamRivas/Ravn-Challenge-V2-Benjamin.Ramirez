@@ -1,5 +1,6 @@
+import { user } from '@prisma/client';
 import { filterUsers } from '../models/user';
-import { User, UserForInsertion, UserForSignIn } from '../types';
+import { UserForInsertion, UserForSignIn } from '../types';
 import { encrypt } from './encrypter';
 import { isString } from './general';
 import { parseRole } from './role';
@@ -42,11 +43,11 @@ export const isNotAnExistingUserName = async (
     usernameFromRequest: string
 ): Promise<boolean> => {
     try {
-        const filters: Partial<User> = {
+        const filters: Partial<user> = {
             user_name: usernameFromRequest,
         };
 
-        const users: Array<User> = await filterUsers(filters);
+        const users: Array<user> = await filterUsers(filters);
 
         return users.length === 0;
     } catch (error) {
