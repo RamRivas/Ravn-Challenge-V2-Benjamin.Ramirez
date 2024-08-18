@@ -1,28 +1,19 @@
-import { Role } from '../types';
-import { pool } from '../db';
-import { PoolClient, QueryResult } from 'pg';
+import { PrismaClient, role } from '@prisma/client';
 
-export const GetAllRoles = async (): Promise<Array<Role>> => {
-    const client: PoolClient = await pool.connect();
+const prisma = new PrismaClient();
+
+export const GetAllRoles = async (): Promise<Array<role>> => {
     try {
-        const result: QueryResult = await client.query('SELECT * FROM "role"');
+        return await prisma.$transaction( async tx => {
+            const result = await tx.role.findMany();
 
-        const roles: Array<Role> = [];
-        for (const element of result.rows) {
-            const role: Role = {
-                ...element,
-            };
-            roles.push(role);
-        }
-
-        return roles;
+            return result;
+        } );
     } catch (error) {
         if (error instanceof Error) {
             throw error;
         } else {
             throw new Error('Unexpected error');
         }
-    } finally {
-        client.release();
     }
 };
