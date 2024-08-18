@@ -1,7 +1,6 @@
 import { filterUsers, signIn, signUp, updateUsers } from '../models/user';
 import { Request, Response } from 'express';
 import { parseUserForInsertion, parseUserForSignIn } from '../services/user';
-import { SignInResponse, UserForSignIn } from '../types';
 import { randomBytes } from 'crypto';
 import * as mailer from '../services/mailer';
 import { encrypt } from '../services/encrypter';
