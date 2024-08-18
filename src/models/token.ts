@@ -1,12 +1,12 @@
 import jwt from 'jsonwebtoken';
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, CTX } from '../config';
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config';
 import { PrismaClient, token, user } from '@prisma/client';
 import { modelCatchResolver } from '../services/resolver';
 import { Credentials, TokenForInsertion } from '../types';
 
 const prisma = new PrismaClient();
 
-const generateAccessToken = (user: user): string => {
+export const generateAccessToken = (user: user): string => {
     try {
         if (ACCESS_TOKEN_SECRET === undefined)
             throw new Error('Missing ACCESS_TOKEN_SECRET');
@@ -26,7 +26,23 @@ const generateRefreshToken = (user: user): string => {
             throw new Error('Missing REFRESH_TOKEN_SECRET');
         return jwt.sign({ user }, REFRESH_TOKEN_SECRET);
     } catch (error) {
-        CTX === 'dev' && console.log(error);
+        if (error instanceof Error) {
+            return modelCatchResolver(error);
+        } else {
+            throw new Error('Unexpected error');
+        }
+    }
+};
+
+export const getToken = ( user_id: number, refresh_token: string ) => {
+    try {
+        return prisma.token.findFirst( {
+            where: {
+                user_id,
+                refresh_token
+            }
+        } );
+    } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
