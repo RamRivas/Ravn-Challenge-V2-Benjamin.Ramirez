@@ -1,9 +1,4 @@
-import {
-    UserForInsertion,
-    User,
-    UserForSignIn,
-    SignInResponse
-} from '../types';
+import { UserForInsertion, UserForSignIn, SignInResponse } from '../types';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
 import { modelCatchResolver, transactionResolver } from '../services/resolver';
@@ -11,34 +6,32 @@ import { PrismaClient, user } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const signUp = async (
-    userToInsert: UserForInsertion
-): Promise<user> => {
+export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
     try {
-        return await prisma.$transaction( async ( tx ) => {
-            const result = await tx.user.create( {
+        return await prisma.$transaction(async (tx) => {
+            const result = await tx.user.create({
                 data: {
-                    ...userToInsert
-                }
-            } );
+                    ...userToInsert,
+                },
+            });
 
-            return transactionResolver( { insertedUser: result } );
-        } );
+            return transactionResolver({ insertedUser: result });
+        });
     } catch (error) {
         if (error instanceof Error) {
-            return modelCatchResolver( error );
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }
     }
 };
 
-export const getAllUsers = async () : Promise<user[]> => {
+export const getAllUsers = async (): Promise<user[]> => {
     try {
         return await prisma.user.findMany();
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }
@@ -46,17 +39,17 @@ export const getAllUsers = async () : Promise<user[]> => {
 };
 
 export const filterUsers = async (
-    filter: Partial<User>
+    filter: Partial<user>
 ): Promise<Array<user>> => {
     try {
-        return await prisma.user.findMany( {
+        return await prisma.user.findMany({
             where: {
-                ...filter
-            }
-        } );
+                ...filter,
+            },
+        });
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }
@@ -64,38 +57,38 @@ export const filterUsers = async (
 };
 
 export const updateUsers = async (
-    users: Array<Partial<User>>,
+    users: Array<Partial<user>>
 ): Promise<number> => {
     try {
         const counter = 0;
-        const rowsAffected = rowsAffectedCounter( counter );
+        const rowsAffected = rowsAffectedCounter(counter);
 
-        return await prisma.$transaction( async tx => {
+        return await prisma.$transaction(async (tx) => {
             for (const i in users) {
-                const element = users[ i ];
+                const element = users[i];
                 const { user_id } = element;
 
                 delete element?.user_id;
 
-                const updatedUser = await tx.user.update( {
+                const updatedUser = await tx.user.update({
                     where: {
-                        user_id
+                        user_id,
                     },
                     data: {
-                        ...element
-                    }
-                } );
+                        ...element,
+                    },
+                });
 
-                if( updatedUser ) {
+                if (updatedUser) {
                     rowsAffected();
                 }
             }
 
-            return transactionResolver( { rowsAffected: counter } );
-        } );
+            return transactionResolver({ rowsAffected: counter });
+        });
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }
@@ -106,14 +99,14 @@ export const signIn = async (
     credentials: UserForSignIn
 ): Promise<SignInResponse> => {
     try {
-        return await prisma.$transaction( async tx => {
+        return await prisma.$transaction(async (tx) => {
             const { user_name, pwd } = credentials;
 
-            const result = await tx.user.findFirst( {
+            const result = await tx.user.findFirst({
                 where: {
-                    user_name: user_name
-                }
-            } );
+                    user_name: user_name,
+                },
+            });
 
             const signInResponse: SignInResponse = {
                 success: false,
@@ -121,9 +114,9 @@ export const signIn = async (
                 forgot_pwd: '0',
             };
 
-            if ( result ) {
+            if (result) {
                 const pwdMatch = await compare(pwd, result.pwd);
-                
+
                 if (pwdMatch) {
                     signInResponse.success = true;
                     signInResponse.message = 'Now you are logged in';
@@ -140,12 +133,12 @@ export const signIn = async (
                     "The given username doesn't exists in our database";
                 delete signInResponse.forgot_pwd;
             }
-    
+
             return signInResponse;
-        } );
+        });
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }

@@ -5,14 +5,9 @@ dotenv.config();
 export const {
     PORT,
     CTX,
-    host,
-    user,
-    password,
-    database,
-    max,
-    idleTimeoutMillis,
-    connectionTimeoutMillis,
     SENDER_EMAIL,
     SENDER_PWD,
     SALT_ROUNDS,
+    ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_SECRET
 } = process.env;

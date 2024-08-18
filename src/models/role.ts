@@ -1,4 +1,5 @@
 import { PrismaClient, role } from '@prisma/client';
+import { modelCatchResolver } from '../services/resolver';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +10,7 @@ export const GetAllRoles = async (): Promise<Array<role>> => {
         return result;
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver(error);
         } else {
             throw new Error('Unexpected error');
         }

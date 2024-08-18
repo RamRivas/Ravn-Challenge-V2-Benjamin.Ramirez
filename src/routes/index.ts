@@ -11,7 +11,4 @@ const roleRoutes = {
     router: role,
 };
 
-export default [
-    userRoutes,
-    roleRoutes
-];
+export default [userRoutes, roleRoutes];

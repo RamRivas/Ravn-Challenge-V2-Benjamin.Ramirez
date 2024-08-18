@@ -50,9 +50,7 @@ export const signInController = async (req: Request, res: Response) => {
 export const forgotPassword = async (req: Request, res: Response) => {
     try {
         const {
-            body: {
-                mail_address
-            }
+            body: { mail_address },
         } = req;
         const filter: Partial<User> = {
             mail_address,
@@ -70,9 +68,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
                 forgot_pwd: '1',
             };
 
-            const rowsAffected: number = await updateUsers(
-                [updateValues]
-            );
+            const rowsAffected: number = await updateUsers([updateValues]);
 
             const body: Options = {
                 from: process.env.SENDER_EMAIL,
