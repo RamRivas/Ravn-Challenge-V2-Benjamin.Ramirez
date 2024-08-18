@@ -1,11 +1,12 @@
 import { filterUsers, signIn, signUp, updateUsers } from '../models/user';
 import { Request, Response } from 'express';
 import { parseUserForInsertion, parseUserForSignIn } from '../services/user';
-import { SignInResponse, User, UserForSignIn } from '../types';
+import { SignInResponse, UserForSignIn } from '../types';
 import { randomBytes } from 'crypto';
 import * as mailer from '../services/mailer';
 import { Options } from 'nodemailer/lib/mailer';
 import { encrypt } from '../services/encrypter';
+import { user } from '@prisma/client';
 
 export const signUpController = async (req: Request, res: Response) => {
     try {
@@ -52,17 +53,17 @@ export const forgotPassword = async (req: Request, res: Response) => {
         const {
             body: { mail_address },
         } = req;
-        const filter: Partial<User> = {
+        const filter: Partial<user> = {
             mail_address,
         };
 
         const provisionalPwd = randomBytes(8).toString('hex');
 
-        const users: Array<User> = await filterUsers(filter);
+        const users: Array<user> = await filterUsers(filter);
 
         if (users.length > 0) {
-            const user: User = users[0];
-            const updateValues: Partial<User> = {
+            const user: user = users[0];
+            const updateValues: Partial<user> = {
                 user_id: user.user_id,
                 pwd: await encrypt(provisionalPwd),
                 forgot_pwd: '1',
