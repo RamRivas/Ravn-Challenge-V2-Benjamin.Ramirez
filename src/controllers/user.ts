@@ -4,7 +4,6 @@ import { parseUserForInsertion, parseUserForSignIn } from '../services/user';
 import { SignInResponse, UserForSignIn } from '../types';
 import { randomBytes } from 'crypto';
 import * as mailer from '../services/mailer';
-import { Options } from 'nodemailer/lib/mailer';
 import { encrypt } from '../services/encrypter';
 import { user } from '@prisma/client';
 
@@ -29,8 +28,8 @@ export const signUpController = async (req: Request, res: Response) => {
 
 export const signInController = async (req: Request, res: Response) => {
     try {
-        const signInSubject: UserForSignIn = await parseUserForSignIn(req.body);
-        const signInResponse: SignInResponse = await signIn(signInSubject);
+        const signInSubject = await parseUserForSignIn(req.body);
+        const signInResponse = await signIn(signInSubject);
 
         res.status(200).json({
             code: 200,
@@ -69,7 +68,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
                 forgot_pwd: '1',
             };
 
-            const rowsAffected: number = await updateUsers([updateValues]);
+            const rowsAffected = await updateUsers([updateValues]);
 
             const body = {
                 from: process.env.SENDER_EMAIL,
