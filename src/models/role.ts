@@ -4,11 +4,9 @@ const prisma = new PrismaClient();
 
 export const GetAllRoles = async (): Promise<Array<role>> => {
     try {
-        return await prisma.$transaction( async tx => {
-            const result = await tx.role.findMany();
+        const result = await prisma.role.findMany();
 
-            return result;
-        } );
+        return result;
     } catch (error) {
         if (error instanceof Error) {
             throw error;
