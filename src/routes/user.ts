@@ -11,6 +11,6 @@ router.route('/signUp').post(signUpController);
 
 router.route('/signIn').post(signInController);
 
-router.route('/forgotPassword').put(forgotPassword);
+router.route('/forgotPassword').patch(forgotPassword);
 
 export default router;
