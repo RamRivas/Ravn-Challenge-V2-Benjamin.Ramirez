@@ -1,4 +1,9 @@
-import { UserForInsertion, UserForSignIn, SignInResponse } from '../types';
+import {
+    UserForInsertion,
+    UserForSignIn,
+    SignInResponse,
+    VerifiedUser,
+} from '../types';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
 import { modelCatchResolver, transactionResolver } from '../services/resolver';
@@ -57,7 +62,7 @@ export const filterUsers = async (
     }
 };
 
-export const updateUsers = async (
+export const updateUser = async (
     users: Array<Partial<user>>
 ): Promise<number> => {
     try {
@@ -96,46 +101,62 @@ export const updateUsers = async (
     }
 };
 
+export const verifyPassword = async (
+    credentials: UserForSignIn,
+    tx: any
+): Promise<VerifiedUser> => {
+    try {
+        const { user_name, pwd } = credentials;
+
+        const result = await tx.user.findFirst({
+            where: {
+                user_name: user_name,
+            },
+        });
+
+        const signInResponse: SignInResponse = {
+            success: false,
+            message: '',
+        };
+
+        if (result != null) {
+            signInResponse.success = await compare(pwd, result.pwd);
+        } else {
+            signInResponse.success = false;
+            signInResponse.message =
+                // eslint-disable-next-line quotes
+                "The given username doesn't exists in our database";
+        }
+
+        return { signInResponse, user: result };
+    } catch (error) {
+        if (error instanceof Error) {
+            return modelCatchResolver(error);
+        } else {
+            throw new Error('Unexpected error');
+        }
+    }
+};
+
 export const signIn = async (
     credentials: UserForSignIn
 ): Promise<SignInResponse> => {
     try {
         return await prisma.$transaction(async (tx) => {
-            const { user_name, pwd } = credentials;
+            const { signInResponse, user } = await verifyPassword(
+                credentials,
+                tx
+            );
+            if (signInResponse.success) {
+                const { accessToken, refreshToken } = await signUser(user, tx);
 
-            const result = await tx.user.findFirst({
-                where: {
-                    user_name: user_name,
-                },
-            });
-
-            const signInResponse: SignInResponse = {
-                success: false,
-                message: '',
-            };
-
-            if (result != null) {
-                const pwdMatch = await compare(pwd, result.pwd);
-
-                if (pwdMatch) {
-                    const { accessToken, refreshToken } = await signUser(
-                        result,
-                        tx
-                    );
-
-                    signInResponse.success = true;
-                    signInResponse.message = 'Now you are logged in';
-                    signInResponse.accessToken = accessToken;
-                    signInResponse.refreshToken = refreshToken;
-                } else {
-                    signInResponse.success = false;
-                    signInResponse.message = 'The given password is incorrect';
-                }
+                signInResponse.success = true;
+                signInResponse.message = 'Now you are logged in';
+                signInResponse.accessToken = accessToken;
+                signInResponse.refreshToken = refreshToken;
             } else {
                 signInResponse.success = false;
-                signInResponse.message =
-                    // eslint-disable-next-line quotes
-                    "The given username doesn't exists in our database";
+                signInResponse.message = 'The given password is incorrect';
             }
 
             return transactionResolver(signInResponse);

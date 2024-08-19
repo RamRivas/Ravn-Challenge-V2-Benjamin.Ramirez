@@ -34,7 +34,7 @@ const generateRefreshToken = (user: user): string => {
     }
 };
 
-export const getToken = (
+export const getTokens = (
     tokenP: Partial<token> = {},
     otherFilters: object = {}
 ) => {
@@ -73,6 +73,25 @@ export const insertToken = async (
     }
 };
 
+export const destroyToken = async (
+    criteria: Partial<token>,
+    tx: any
+): Promise<token> => {
+    try {
+        return await tx.token.deleteMany({
+            where: {
+                ...criteria,
+            },
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            return modelCatchResolver(error);
+        } else {
+            throw new Error('Unexpected error');
+        }
+    }
+};
+
 export const signUser = async (user: user, tx: any): Promise<Credentials> => {
     try {
         const accessToken = generateAccessToken(user);
@@ -86,7 +105,7 @@ export const signUser = async (user: user, tx: any): Promise<Credentials> => {
             user_id,
         };
 
-        const recordset = await getToken({ user_id, token_status: '1' });
+        const recordset = await getTokens({ user_id, token_status: '1' });
 
         if (recordset.length > 0)
             throw new Error('There is another active session for this user');

@@ -1,4 +1,10 @@
-import { filterUsers, signIn, signUp, updateUsers } from '../models/user';
+import {
+    filterUsers,
+    signIn,
+    signUp,
+    updateUser,
+    verifyPassword,
+} from '../models/user';
 import { Request, Response } from 'express';
 import { parseUserForInsertion, parseUserForSignIn } from '../services/user';
 import { randomBytes } from 'crypto';
@@ -6,6 +12,11 @@ import * as mailer from '../services/mailer';
 import { encrypt } from '../services/encrypter';
 import { user } from '@prisma/client';
 import { CTX } from '../config';
+import { PrismaClient } from '@prisma/client';
+import { destroyToken } from '../models/token';
+import { AuthenticatedRequest } from '../types';
+
+const prisma = new PrismaClient();
 
 export const signUpController = async (req: Request, res: Response) => {
     try {
@@ -69,7 +80,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
                 forgot_pwd: '1',
             };
 
-            const rowsAffected = await updateUsers([updateValues]);
+            const rowsAffected = await updateUser([updateValues]);
 
             const body = {
                 from: process.env.SENDER_EMAIL,
@@ -89,6 +100,58 @@ export const forgotPassword = async (req: Request, res: Response) => {
                 'There are no users who match with the given filters'
             );
         }
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).send(error.message);
+        } else {
+            res.status(400).send('Unexpected error');
+        }
+    }
+};
+
+export const logOut = async (req: Request, res: Response) => {
+    try {
+        const {
+            user: { user_id },
+        } = req;
+
+        const logOutResult = await prisma.$transaction(async (tx) => {
+            return await destroyToken({ user_id }, tx);
+        });
+
+        res.status(200).json({
+            code: 200,
+            message: 'A provisional password was sent to your mail',
+            result: logOutResult,
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).send(error.message);
+        } else {
+            res.status(400).send('Unexpected error');
+        }
+    }
+};
+
+export const logOutNoAuth = async (req: Request, res: Response) => {
+    try {
+        const {
+            body: { user_name, pwd },
+        } = req;
+
+        const logOutResult = await prisma.$transaction(async (tx) => {
+            const {
+                user: { user_id },
+            } = await verifyPassword({ user_name, pwd }, tx);
+
+            return await destroyToken({ user_id }, tx);
+        });
+
+        res.status(200).json({
+            code: 200,
+            message: 'A provisional password was sent to your mail',
+            result: logOutResult,
+        });
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).send(error.message);
