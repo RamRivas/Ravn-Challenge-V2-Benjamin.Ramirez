@@ -14,7 +14,7 @@ import { CTX } from '../config';
 import { PrismaClient, user } from '@prisma/client';
 import { destroyToken } from '../models/token';
 import { controllerCatchResolver, controllerTransactionResolver } from '../services/resolver';
-import { AuthenticatedRequest, ControllerResponse } from '../types';
+import { ControllerResponse } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -109,7 +109,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     }
 };
 
-export const logOut = async (req: AuthenticatedRequest, res: Response) => {
+export const logOut = async (req: Request, res: Response) => {
     try {
         const { user } = req;
 

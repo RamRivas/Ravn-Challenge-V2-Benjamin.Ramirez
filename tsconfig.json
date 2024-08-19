@@ -101,5 +101,12 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "exclude": ["node_modules", "**/*.spec.ts"],
-    "include": ["src/*d.ts", "./app.ts", "src/*.d.ts"]
+    "include": ["src/*d.ts", "./app.ts", "src/*.d.ts"],
+    "ts-node": {
+        "files": true
+    },
+    "files": [
+        "src/environment.d.ts",
+        "src/express.d.ts"
+    ],
 }
