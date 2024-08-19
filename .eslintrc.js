@@ -18,5 +18,6 @@ module.exports = {
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
         '@typescript-eslint/no-explicit-any': 'off',
+        'no-empty-pattern': 'off',
     },
 };
