@@ -76,13 +76,15 @@ export const insertToken = async (
 export const destroyToken = async (
     criteria: Partial<token>,
     tx: any
-): Promise<token> => {
+): Promise<number> => {
     try {
-        return await tx.token.deleteMany({
+        const { count } = await tx.token.deleteMany({
             where: {
-                ...criteria,
+                ...criteria
             },
+            
         });
+        return count;
     } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);

@@ -3,6 +3,7 @@ import {
     UserForSignIn,
     SignInResponse,
     VerifiedUser,
+    UpdateOrDeleteResult
 } from '../types';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
@@ -14,14 +15,14 @@ const prisma = new PrismaClient();
 
 export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
     try {
-        return await prisma.$transaction(async (tx) => {
+        return await prisma.$transaction(async (tx): Promise<user> => {
             const result = await tx.user.create({
                 data: {
                     ...userToInsert,
                 },
             });
 
-            return transactionResolver({ insertedUser: result });
+            return transactionResolver( result );
         });
     } catch (error) {
         if (error instanceof Error) {
@@ -69,7 +70,7 @@ export const updateUser = async (
         const counter = 0;
         const rowsAffected = rowsAffectedCounter(counter);
 
-        return await prisma.$transaction(async (tx) => {
+        const { rowsAffected: rowsAffectedReturnValue } = await prisma.$transaction(async (tx): Promise<UpdateOrDeleteResult> => {
             for (const i in users) {
                 const element = users[i];
                 const { user_id } = element;
@@ -92,6 +93,8 @@ export const updateUser = async (
 
             return transactionResolver({ rowsAffected: counter });
         });
+
+        return rowsAffectedReturnValue;
     } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);
@@ -114,24 +117,25 @@ export const verifyPassword = async (
             },
         });
 
-        const signInResponse: SignInResponse = {
-            success: false,
-            message: '',
-        };
 
-        if (result != null) {
-            signInResponse.success = await compare(pwd, result.pwd);
+        if ( result ) {
+            return {
+                success: await compare(pwd, result.pwd),
+                message: '',
+                user: result
+            };
         } else {
-            signInResponse.success = false;
-            signInResponse.message =
+            return {
+                success: false,
+                message:
                 // eslint-disable-next-line quotes
-                "The given username doesn't exists in our database";
+                "The given username doesn't exists in our database"
+            };
         }
 
-        return { signInResponse, user: result };
     } catch (error) {
         if (error instanceof Error) {
-            return modelCatchResolver(error);
+            throw error;
         } else {
             throw new Error('Unexpected error');
         }
@@ -142,24 +146,27 @@ export const signIn = async (
     credentials: UserForSignIn
 ): Promise<SignInResponse> => {
     try {
-        return await prisma.$transaction(async (tx) => {
-            const { signInResponse, user } = await verifyPassword(
+        return await prisma.$transaction(async (tx) : Promise<SignInResponse> => {
+            const verifiedUser = await verifyPassword(
                 credentials,
                 tx
             );
-            if (signInResponse.success) {
-                const { accessToken, refreshToken } = await signUser(user, tx);
+            
+            const {
+                success,
+                message,
+                user: userFromCredentials,
+            } = verifiedUser;
 
-                signInResponse.success = true;
-                signInResponse.message = 'Now you are logged in';
-                signInResponse.accessToken = accessToken;
-                signInResponse.refreshToken = refreshToken;
+            if ( !success && userFromCredentials ) {
+                return transactionResolver( { success, message } );
+            } else if( userFromCredentials ) {
+                const { accessToken, refreshToken } = await signUser(userFromCredentials, tx);
+                return transactionResolver( { success, message: 'Now you are logged in', accessToken, refreshToken } );
             } else {
-                signInResponse.success = false;
-                signInResponse.message = 'The given password is incorrect';
+                return transactionResolver( { success, message: 'The given password is incorrect' } );
             }
-
-            return transactionResolver(signInResponse);
+             
         });
     } catch (error) {
         if (error instanceof Error) {

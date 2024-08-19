@@ -14,7 +14,8 @@ import { user } from '@prisma/client';
 import { CTX } from '../config';
 import { PrismaClient } from '@prisma/client';
 import { destroyToken } from '../models/token';
-import { AuthenticatedRequest } from '../types';
+import { controllerCatchResolver, controllerTransactionResolver } from '../services/resolver';
+import { AuthenticatedRequest, ControllerResponse } from '../types';
 
 const prisma = new PrismaClient();
 
@@ -109,21 +110,24 @@ export const forgotPassword = async (req: Request, res: Response) => {
     }
 };
 
-export const logOut = async (req: Request, res: Response) => {
+export const logOut = async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const {
-            user: { user_id },
-        } = req;
+        const { user } = req;
 
-        const logOutResult = await prisma.$transaction(async (tx) => {
-            return await destroyToken({ user_id }, tx);
-        });
+        if( user ) {
+            const { user_id } = user;
+            const logOutResult = await prisma.$transaction(async (tx) => {
+                return await destroyToken({ user_id }, tx);
+            });
+            res.status(200).json({
+                code: 200,
+                message: 'A provisional password was sent to your mail',
+                result: logOutResult,
+            });
+        } else {
+            res.status( 403 );
+        }
 
-        res.status(200).json({
-            code: 200,
-            message: 'A provisional password was sent to your mail',
-            result: logOutResult,
-        });
     } catch (error) {
         if (error instanceof Error) {
             res.status(400).send(error.message);
@@ -139,24 +143,39 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
             body: { user_name, pwd },
         } = req;
 
-        const logOutResult = await prisma.$transaction(async (tx) => {
-            const {
-                user: { user_id },
-            } = await verifyPassword({ user_name, pwd }, tx);
-
-            return await destroyToken({ user_id }, tx);
+        const logOutResult = await prisma.$transaction(async (tx): Promise<number | ControllerResponse> => {
+            const { success, message, user: verifiedUser } = await verifyPassword({ user_name, pwd }, tx);
+            
+            if ( !success && verifiedUser ) {
+                return controllerTransactionResolver( { success, message } );
+            } if( verifiedUser ) {
+                const { user_id } = verifiedUser;
+                const destroyedTokens = await destroyToken( { user_id }, tx);
+                if( destroyedTokens === 0 ) {
+                    return controllerTransactionResolver( {
+                        code: 400,
+                        message: 'There are no current active sessions for the given user'
+                    } );
+                }
+                return controllerTransactionResolver( { code: 200, message: 'Sessions have been clossed', result: destroyedTokens } );
+            } else {
+                return controllerTransactionResolver( {
+                    code: 400,
+                    message: 'The given password is incorrect'
+                } );
+            }
         });
 
-        res.status(200).json({
+        res.status(200).json( {
             code: 200,
-            message: 'A provisional password was sent to your mail',
+            message: 'LogOut request reached and proccessed successfully',
             result: logOutResult,
-        });
+        } );
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).send(error.message);
+            controllerCatchResolver( error, res );
         } else {
-            res.status(400).send('Unexpected error');
+            res.status(500).send('Unexpected error');
         }
     }
 };

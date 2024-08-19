@@ -1,7 +1,8 @@
 import express from 'express';
 import {
     forgotPassword,
-    logOut,
+    // logOut,
+    logOutNoAuth,
     signInController,
     signUpController,
 } from '../controllers/user';
@@ -14,8 +15,8 @@ router.route('/signIn').post(signInController);
 
 router.route('/forgotPassword').patch(forgotPassword);
 
-router.route('/logOut').delete(logOut);
+// router.route('/logOut').delete(logOut);
 
-router.route('/logOutNoAuth').post(forgotPassword);
+router.route('/logOutNoAuth').post(logOutNoAuth);
 
 export default router;
