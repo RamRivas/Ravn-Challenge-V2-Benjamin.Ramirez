@@ -4,7 +4,6 @@ import {
     user
 } from '@prisma/client';
 // import { PrismaClientOptions } from '@prisma/client/runtime/library';
-import { Request } from 'express';
 
 // export type PrismaTransactionalClient = Omit<PrismaClient<PrismaClientOptions, never, DefaultArgs>, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
 export type UserForInsertion = Omit<user, 'user_id' | 'forgot_pwd'>;
