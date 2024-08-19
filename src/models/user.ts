@@ -119,7 +119,8 @@ export const signIn = async (
 
                 if (pwdMatch) {
                     const { accessToken, refreshToken } = await signUser(
-                        result
+                        result,
+                        tx
                     );
 
                     signInResponse.success = true;
@@ -137,7 +138,7 @@ export const signIn = async (
                     "The given username doesn't exists in our database";
             }
 
-            return signInResponse;
+            return transactionResolver(signInResponse);
         });
     } catch (error) {
         if (error instanceof Error) {

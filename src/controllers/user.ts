@@ -5,6 +5,7 @@ import { randomBytes } from 'crypto';
 import * as mailer from '../services/mailer';
 import { encrypt } from '../services/encrypter';
 import { user } from '@prisma/client';
+import { CTX } from '../config';
 
 export const signUpController = async (req: Request, res: Response) => {
     try {
@@ -39,6 +40,7 @@ export const signInController = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error) {
+            CTX === 'dev' && console.log(error);
             res.status(400).send(error.message);
         } else {
             res.status(400).send('Unexpected error');

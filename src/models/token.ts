@@ -55,10 +55,11 @@ export const getToken = (
 };
 
 export const insertToken = async (
-    tokenToInsert: TokenForInsertion
+    tokenToInsert: TokenForInsertion,
+    tx: any
 ): Promise<token> => {
     try {
-        return await prisma.token.create({
+        return await tx.token.create({
             data: {
                 ...tokenToInsert,
             },
@@ -72,7 +73,7 @@ export const insertToken = async (
     }
 };
 
-export const signUser = async (user: user): Promise<Credentials> => {
+export const signUser = async (user: user, tx: any): Promise<Credentials> => {
     try {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
@@ -87,10 +88,10 @@ export const signUser = async (user: user): Promise<Credentials> => {
 
         const recordset = await getToken({ user_id, token_status: '1' });
 
-        if (recordset > 0)
+        if (recordset.length > 0)
             throw new Error('There is another active session for this user');
 
-        await insertToken(token);
+        await insertToken(token, tx);
 
         return {
             accessToken,

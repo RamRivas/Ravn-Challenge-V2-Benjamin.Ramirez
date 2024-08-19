@@ -22,5 +22,10 @@ export const rowsAffectedCounter = (counter: number) => {
 };
 
 export const isValidJSON = (possibleJson: string): boolean => {
-    return Boolean(JSON.parse(possibleJson));
+    try {
+        JSON.parse(possibleJson);
+        return true;
+    } catch (error) {
+        return false;
+    }
 };
