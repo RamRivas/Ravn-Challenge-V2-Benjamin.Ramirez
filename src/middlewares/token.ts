@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { ACCESS_TOKEN_SECRET } from '../config';
-// import { AuthenticatedRequest } from '../types';
 import { isValidJSON } from '../services/general';
 import { controllerCatchResolver } from '../services/resolver';
 

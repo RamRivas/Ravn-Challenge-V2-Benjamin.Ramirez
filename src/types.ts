@@ -38,10 +38,6 @@ export interface Credentials {
     refreshToken: string;
 }
 
-export interface AuthenticatedRequest extends Request {
-    user: user;
-}
-
 export interface ControllerResponse {
     code: number,
     message: string,
