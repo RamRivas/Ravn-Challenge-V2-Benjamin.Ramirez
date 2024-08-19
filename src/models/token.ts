@@ -34,14 +34,17 @@ const generateRefreshToken = (user: user): string => {
     }
 };
 
-export const getToken = ( otherFilters: object, tokenP: Partial<token> = {} ) => {
+export const getToken = (
+    tokenP: Partial<token> = {},
+    otherFilters: object = {}
+) => {
     try {
-        return prisma.token.findFirst( {
+        return prisma.token.findMany({
             where: {
                 ...tokenP,
-                ...otherFilters
-            }
-        } );
+                ...otherFilters,
+            },
+        });
     } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);
@@ -74,11 +77,18 @@ export const signUser = async (user: user): Promise<Credentials> => {
         const accessToken = generateAccessToken(user);
         const refreshToken = generateRefreshToken(user);
 
+        const { user_id } = user;
+
         const token = {
             refresh_token: refreshToken,
             creation_date: new Date(),
-            user_id: user.user_id
+            user_id,
         };
+
+        const recordset = await getToken({ user_id, token_status: '1' });
+
+        if (recordset > 0)
+            throw new Error('There is another active session for this user');
 
         await insertToken(token);
 

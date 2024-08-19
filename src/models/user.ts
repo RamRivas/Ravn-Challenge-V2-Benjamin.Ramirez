@@ -3,6 +3,7 @@ import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
 import { modelCatchResolver, transactionResolver } from '../services/resolver';
 import { PrismaClient, user } from '@prisma/client';
+import { signUser } from '../models/token';
 
 const prisma = new PrismaClient();
 
@@ -111,27 +112,29 @@ export const signIn = async (
             const signInResponse: SignInResponse = {
                 success: false,
                 message: '',
-                forgot_pwd: '0',
             };
 
-            if (result) {
+            if (result != null) {
                 const pwdMatch = await compare(pwd, result.pwd);
 
                 if (pwdMatch) {
+                    const { accessToken, refreshToken } = await signUser(
+                        result
+                    );
+
                     signInResponse.success = true;
                     signInResponse.message = 'Now you are logged in';
-                    signInResponse.forgot_pwd = result.forgot_pwd;
+                    signInResponse.accessToken = accessToken;
+                    signInResponse.refreshToken = refreshToken;
                 } else {
                     signInResponse.success = false;
                     signInResponse.message = 'The given password is incorrect';
-                    delete signInResponse.forgot_pwd;
                 }
             } else {
                 signInResponse.success = false;
                 signInResponse.message =
                     // eslint-disable-next-line quotes
                     "The given username doesn't exists in our database";
-                delete signInResponse.forgot_pwd;
             }
 
             return signInResponse;
