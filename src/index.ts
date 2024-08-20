@@ -1,8 +1,9 @@
 import express from 'express';
 import morgan from 'morgan';
 import Routes from './routes';
-import { PORT, CTX } from './config';
-import {} from './config';
+import config from './config';
+
+const { CTX, PORT } = config;
 
 export const main = () => {
     // const { PORT, CTX } = process.env;

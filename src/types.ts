@@ -33,9 +33,19 @@ export type TokenForInsertion = Omit<
 >;
 
 export interface JwtPayload {
-    user?: user,
-    iat: number,
-    exp: number
+    user?: user;
+    iat: number;
+    exp: number;
+}
+
+export interface ProcessEnv {
+    PORT: string;
+    CTX: string;
+    SALT_ROUNDS: number;
+    SENDER_EMAIL: string;
+    SENDER_PWD: string;
+    ACCESS_TOKEN_SECRET: string;
+    REFRESH_TOKEN_SECRET: string;
 }
 
 export interface Credentials {

@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from '../config';
+import config from '../config';
 import { PrismaClient, token, user } from '@prisma/client';
 import { modelCatchResolver } from '../services/resolver';
 import { Credentials, TokenForInsertion } from '../types';
 
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = config;
 const prisma = new PrismaClient();
 
 export const generateAccessToken = (user: user): string => {

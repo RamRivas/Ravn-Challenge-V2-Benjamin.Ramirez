@@ -39,19 +39,21 @@ export const signUpController = async (req: Request, res: Response) => {
 export const signInController = async (req: Request, res: Response) => {
     try {
         const signInSubject = await parseUserForSignIn(req.body);
-        const { message, accessToken, refreshToken } = await signIn(signInSubject);
+        const { message, accessToken, refreshToken } = await signIn(
+            signInSubject
+        );
 
         res.status(200).json({
             code: 200,
             message,
             result: {
                 accessToken,
-                refreshToken
+                refreshToken,
             },
         });
     } catch (error) {
         if (error instanceof Error) {
-            controllerCatchResolver( error, res );
+            controllerCatchResolver(error, res);
         } else {
             res.status(400).send('Unexpected error');
         }
@@ -143,7 +145,7 @@ export const logOut = async (req: Request, res: Response) => {
         }
     } catch (error) {
         if (error instanceof Error) {
-            controllerCatchResolver( error, res );
+            controllerCatchResolver(error, res);
         } else {
             res.status(400).send('Unexpected error');
         }
@@ -158,10 +160,10 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
 
         const { code, message, result } = await prisma.$transaction(
             async (tx): Promise<ControllerResponse> => {
-                const {
-                    success,
-                    user: verifiedUser,
-                } = await verifyPassword({ user_name, pwd }, tx);
+                const { success, user: verifiedUser } = await verifyPassword(
+                    { user_name, pwd },
+                    tx
+                );
 
                 if (success && verifiedUser) {
                     const { user_id } = verifiedUser;

@@ -126,12 +126,14 @@ export const verifyPassword = async (
                 user: result,
             };
         } else {
-            throw new Error( JSON.stringify(  {
-                code: 400,
-                message:
-                    // eslint-disable-next-line quotes
-                    "The given username or password is not correct",
-            } ) );
+            throw new Error(
+                JSON.stringify({
+                    code: 400,
+                    message:
+                        // eslint-disable-next-line quotes
+                        'The given username or password is not correct',
+                })
+            );
         }
     } catch (error) {
         if (error instanceof Error) {
@@ -150,10 +152,7 @@ export const signIn = async (
             async (tx): Promise<SignInResponse> => {
                 const verifiedUser = await verifyPassword(credentials, tx);
 
-                const {
-                    success,
-                    user: userFromCredentials,
-                } = verifiedUser;
+                const { success, user: userFromCredentials } = verifiedUser;
 
                 if (success && userFromCredentials) {
                     const { accessToken, refreshToken } = await signUser(
@@ -167,10 +166,13 @@ export const signIn = async (
                         refreshToken,
                     };
                 } else {
-                    throw new Error( JSON.stringify( {
-                        code: 400,
-                        message: 'The given username or password is not correct',
-                    } ) );
+                    throw new Error(
+                        JSON.stringify({
+                            code: 400,
+                            message:
+                                'The given username or password is not correct',
+                        })
+                    );
                 }
             }
         );

@@ -1,6 +1,8 @@
-import { CTX } from '../config';
+import config from '../config';
 import { isValidJSON } from '../services/general';
 import { Response } from 'express';
+
+const { CTX } = config;
 
 export const transactionResolver = (result: any): any => {
     if (CTX === 'dev') {

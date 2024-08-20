@@ -1,5 +1,6 @@
 import user from './user';
 import role from './role';
+import token from './token';
 
 const userRoutes = {
     prefix: '/user',
@@ -11,4 +12,9 @@ const roleRoutes = {
     router: role,
 };
 
-export default [userRoutes, roleRoutes];
+const tokenRoutes = {
+    prefix: '/token',
+    router: token,
+};
+
+export default [userRoutes, roleRoutes, tokenRoutes];
