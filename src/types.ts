@@ -32,6 +32,12 @@ export type TokenForInsertion = Omit<
     'token_id' | 'token_status' | 'destroy_date'
 >;
 
+export interface JwtPayload {
+    user?: user,
+    iat: number,
+    exp: number
+}
+
 export interface Credentials {
     accessToken: string;
     refreshToken: string;

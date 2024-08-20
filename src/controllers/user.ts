@@ -128,7 +128,7 @@ export const logOut = async (req: Request, res: Response) => {
                     }
                     return {
                         code: 200,
-                        message: 'Sessions have been clossed',
+                        message: 'Sessions have been closed',
                         result: destroyedTokens,
                     };
                 }
@@ -143,7 +143,7 @@ export const logOut = async (req: Request, res: Response) => {
         }
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).send(error.message);
+            controllerCatchResolver( error, res );
         } else {
             res.status(400).send('Unexpected error');
         }
@@ -177,7 +177,7 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
                     }
                     return {
                         code: 200,
-                        message: 'Sessions have been clossed',
+                        message: 'Sessions have been closed',
                         result: destroyedTokens,
                     };
                 } else {

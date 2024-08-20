@@ -10,7 +10,7 @@ export const generateAccessToken = (user: user): string => {
     try {
         if (ACCESS_TOKEN_SECRET === undefined)
             throw new Error('Missing ACCESS_TOKEN_SECRET');
-        return jwt.sign({ user }, ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
+        return jwt.sign({ user }, ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
     } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);
@@ -24,7 +24,7 @@ const generateRefreshToken = (user: user): string => {
     try {
         if (REFRESH_TOKEN_SECRET === undefined)
             throw new Error('Missing REFRESH_TOKEN_SECRET');
-        return jwt.sign({ user }, REFRESH_TOKEN_SECRET);
+        return jwt.sign({ user }, REFRESH_TOKEN_SECRET, { expiresIn: '360d' });
     } catch (error) {
         if (error instanceof Error) {
             return modelCatchResolver(error);
@@ -34,12 +34,12 @@ const generateRefreshToken = (user: user): string => {
     }
 };
 
-export const getTokens = (
+export const getTokens = async (
     tokenP: Partial<token> = {},
     otherFilters: object = {}
-) => {
+): Promise<token[]> => {
     try {
-        return prisma.token.findMany({
+        return await prisma.token.findMany({
             where: {
                 ...tokenP,
                 ...otherFilters,

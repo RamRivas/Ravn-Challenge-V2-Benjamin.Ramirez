@@ -29,3 +29,7 @@ export const isValidJSON = (possibleJson: string): boolean => {
         return false;
     }
 };
+
+// export const isObject = ( possibleObj: any ): boolean => {
+//     return typeof possibleObj === 'object';
+// };
