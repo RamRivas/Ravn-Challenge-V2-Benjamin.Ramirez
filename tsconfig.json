@@ -105,8 +105,5 @@
     "ts-node": {
         "files": true
     },
-    "files": [
-        "src/environment.d.ts",
-        "src/express.d.ts"
-    ],
+    "files": ["src/environment.d.ts", "src/express.d.ts"]
 }

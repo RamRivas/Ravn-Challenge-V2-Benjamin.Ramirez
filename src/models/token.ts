@@ -80,9 +80,8 @@ export const destroyToken = async (
     try {
         const { count } = await tx.token.deleteMany({
             where: {
-                ...criteria
+                ...criteria,
             },
-            
         });
         return count;
     } catch (error) {
@@ -112,11 +111,12 @@ export const signUser = async (user: user, tx: any): Promise<Credentials> => {
         if (recordset.length > 0)
             throw new Error('There is another active session for this user');
 
-        await insertToken(token, tx);
+        const session = await insertToken(token, tx);
 
         return {
             accessToken,
             refreshToken,
+            session,
         };
     } catch (error) {
         if (error instanceof Error) {

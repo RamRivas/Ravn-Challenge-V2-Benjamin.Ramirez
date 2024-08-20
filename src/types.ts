@@ -1,7 +1,7 @@
 import {
     // PrismaClient,
     token,
-    user
+    user,
 } from '@prisma/client';
 // import { PrismaClientOptions } from '@prisma/client/runtime/library';
 
@@ -19,12 +19,12 @@ export type SignInResponse = Partial<Credentials> & {
     forgot_pwd?: string;
 };
 
-export type VerifiedUser = SignInResponse & {
+export type VerifiedUser = Omit<SignInResponse, 'message'> & {
     user?: user;
 };
 
 export interface UpdateOrDeleteResult {
-    rowsAffected: number
+    rowsAffected: number;
 }
 
 export type TokenForInsertion = Omit<
@@ -35,10 +35,11 @@ export type TokenForInsertion = Omit<
 export interface Credentials {
     accessToken: string;
     refreshToken: string;
+    session: token;
 }
 
 export interface ControllerResponse {
-    code: number,
-    message: string,
-    result?: any
+    code: number;
+    message: string;
+    result?: any;
 }

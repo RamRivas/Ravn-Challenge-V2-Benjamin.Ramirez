@@ -3,7 +3,7 @@ import {
     UserForSignIn,
     SignInResponse,
     VerifiedUser,
-    UpdateOrDeleteResult
+    UpdateOrDeleteResult,
 } from '../types';
 import { compare } from 'bcrypt';
 import { rowsAffectedCounter } from '../services/general';
@@ -22,7 +22,7 @@ export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
                 },
             });
 
-            return transactionResolver( result );
+            return transactionResolver(result);
         });
     } catch (error) {
         if (error instanceof Error) {
@@ -70,29 +70,32 @@ export const updateUser = async (
         const counter = 0;
         const rowsAffected = rowsAffectedCounter(counter);
 
-        const { rowsAffected: rowsAffectedReturnValue } = await prisma.$transaction(async (tx): Promise<UpdateOrDeleteResult> => {
-            for (const i in users) {
-                const element = users[i];
-                const { user_id } = element;
+        const { rowsAffected: rowsAffectedReturnValue } =
+            await prisma.$transaction(
+                async (tx): Promise<UpdateOrDeleteResult> => {
+                    for (const i in users) {
+                        const element = users[i];
+                        const { user_id } = element;
 
-                delete element?.user_id;
+                        delete element?.user_id;
 
-                const updatedUser = await tx.user.update({
-                    where: {
-                        user_id,
-                    },
-                    data: {
-                        ...element,
-                    },
-                });
+                        const updatedUser = await tx.user.update({
+                            where: {
+                                user_id,
+                            },
+                            data: {
+                                ...element,
+                            },
+                        });
 
-                if (updatedUser) {
-                    rowsAffected();
+                        if (updatedUser) {
+                            rowsAffected();
+                        }
+                    }
+
+                    return transactionResolver({ rowsAffected: counter });
                 }
-            }
-
-            return transactionResolver({ rowsAffected: counter });
-        });
+            );
 
         return rowsAffectedReturnValue;
     } catch (error) {
@@ -117,22 +120,19 @@ export const verifyPassword = async (
             },
         });
 
-
-        if ( result ) {
+        if (result) {
             return {
                 success: await compare(pwd, result.pwd),
-                message: '',
-                user: result
+                user: result,
             };
         } else {
-            return {
-                success: false,
+            throw new Error( JSON.stringify(  {
+                code: 400,
                 message:
-                // eslint-disable-next-line quotes
-                "The given username doesn't exists in our database"
-            };
+                    // eslint-disable-next-line quotes
+                    "The given username or password is not correct",
+            } ) );
         }
-
     } catch (error) {
         if (error instanceof Error) {
             throw error;
@@ -146,31 +146,37 @@ export const signIn = async (
     credentials: UserForSignIn
 ): Promise<SignInResponse> => {
     try {
-        return await prisma.$transaction(async (tx) : Promise<SignInResponse> => {
-            const verifiedUser = await verifyPassword(
-                credentials,
-                tx
-            );
-            
-            const {
-                success,
-                message,
-                user: userFromCredentials,
-            } = verifiedUser;
+        return await prisma.$transaction(
+            async (tx): Promise<SignInResponse> => {
+                const verifiedUser = await verifyPassword(credentials, tx);
 
-            if ( !success && userFromCredentials ) {
-                return transactionResolver( { success, message } );
-            } else if( userFromCredentials ) {
-                const { accessToken, refreshToken } = await signUser(userFromCredentials, tx);
-                return transactionResolver( { success, message: 'Now you are logged in', accessToken, refreshToken } );
-            } else {
-                return transactionResolver( { success, message: 'The given password is incorrect' } );
+                const {
+                    success,
+                    user: userFromCredentials,
+                } = verifiedUser;
+
+                if (success && userFromCredentials) {
+                    const { accessToken, refreshToken } = await signUser(
+                        userFromCredentials,
+                        tx
+                    );
+                    return {
+                        success,
+                        message: 'Now you are logged in',
+                        accessToken,
+                        refreshToken,
+                    };
+                } else {
+                    throw new Error( JSON.stringify( {
+                        code: 400,
+                        message: 'The given username or password is not correct',
+                    } ) );
+                }
             }
-             
-        });
+        );
     } catch (error) {
         if (error instanceof Error) {
-            return modelCatchResolver(error);
+            throw error;
         } else {
             throw new Error('Unexpected error');
         }

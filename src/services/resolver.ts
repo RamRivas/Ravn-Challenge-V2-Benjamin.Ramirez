@@ -9,7 +9,7 @@ export const transactionResolver = (result: any): any => {
     return result;
 };
 
-export const controllerTransactionResolver = ( result: any ): any => {
+export const controllerTransactionResolver = (result: any): any => {
     if (CTX === 'dev') {
         throw new Error(JSON.stringify({ sucess: true, CTX, ...result }));
     }
@@ -25,15 +25,15 @@ export const modelCatchResolver = (obj: Error): any => {
     throw obj;
 };
 
-export const controllerCatchResolver = ( obj: Error, res: Response ) => {
-    if( CTX === 'dev' ) {
+export const controllerCatchResolver = (obj: Error, res: Response) => {
+    if (CTX === 'dev') {
         // console.log( obj.message );
-        if( isValidJSON( obj.message ) ) {
-            const customError = JSON.parse( obj.message );
+        if (isValidJSON(obj.message)) {
+            const customError = JSON.parse(obj.message);
             const { code } = customError;
-            res.status( code ).json( customError );
+            res.status(code).json(customError);
             return;
-        } 
+        }
     }
-    res.status( 500 ).send( obj.message );
+    res.status(500).send(obj.message);
 };
