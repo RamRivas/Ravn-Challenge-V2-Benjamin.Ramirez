@@ -1,8 +1,14 @@
 import {
+    endpoint,
+    endpoint_role_method,
+    http_method,
     // PrismaClient,
+    Prisma,
+    role,
     token,
     user,
 } from '@prisma/client';
+// import { DefaultArgs } from '@prisma/client/runtime/library';
 // import { PrismaClientOptions } from '@prisma/client/runtime/library';
 
 // export type PrismaTransactionalClient = Omit<PrismaClient<PrismaClientOptions, never, DefaultArgs>, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
@@ -12,6 +18,30 @@ export type UserForSignIn = Omit<
     user,
     'user_id' | 'role_id' | 'mail_address' | 'forgot_pwd'
 >;
+
+export type EndpointJoined = {
+    endpoint_role_method: EndpointRoleMethodJoined & endpoint_role_method;
+} & endpoint;
+
+export type EndpointRoleMethodJoined = {
+    http_method?: Partial<http_method>;
+    endpoint?: Partial<endpoint>;
+    role?: Partial<role>;
+} & Partial<endpoint_role_method>
+
+export type TokenFilter = Prisma.tokenWhereInput;
+
+export type RoleFilter = Prisma.roleWhereInput;
+
+export type EndpointFilter = Prisma.endpointWhereInput;
+
+export type HttpMethodFilter = Prisma.http_methodWhereInput;
+
+export type EndpointSelect = Prisma.endpointSelect;
+
+export type HttpMethodSelect = Prisma.http_methodSelect;
+
+export type EndpointRoleMethodFilter = Prisma.endpoint_role_methodWhereInput;
 
 export type SignInResponse = Partial<Credentials> & {
     success: boolean;

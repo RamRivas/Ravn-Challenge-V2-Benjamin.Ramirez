@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import config from '../config';
 import { PrismaClient, token, user } from '@prisma/client';
 import { modelCatchResolver } from '../services/resolver';
-import { Credentials, TokenForInsertion } from '../types';
+import { Credentials, TokenFilter, TokenForInsertion } from '../types';
 
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = config;
 const prisma = new PrismaClient();
@@ -36,14 +36,12 @@ const generateRefreshToken = (user: user): string => {
 };
 
 export const getTokens = async (
-    tokenP: Partial<token> = {},
-    otherFilters: object = {}
+    tokenP: TokenFilter
 ): Promise<token[]> => {
     try {
         return await prisma.token.findMany({
             where: {
-                ...tokenP,
-                ...otherFilters,
+                ...tokenP
             },
         });
     } catch (error) {

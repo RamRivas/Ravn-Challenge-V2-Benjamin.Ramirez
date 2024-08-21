@@ -1,12 +1,12 @@
 import { role } from '@prisma/client';
-import { GetAllRoles } from '../models/role';
+import { getRoles } from '../models/role';
 import { isInteger, isString } from './general';
 
 export const isValidRole = async (
     roleFromRequest: number
 ): Promise<boolean> => {
     try {
-        const roles: Array<role> = await GetAllRoles();
+        const roles: Array<role> = await getRoles();
         return (
             roles.find((current) => current.role_id === roleFromRequest) !=
             undefined

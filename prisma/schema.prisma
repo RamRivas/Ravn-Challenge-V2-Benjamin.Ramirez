@@ -18,16 +18,10 @@ model endpoint_role_method {
   role_id     Int
   method_id   Int
   endpoint    endpoint    @relation(fields: [endpoint_id], references: [endpoint_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_endpoint_fk")
-  html_method html_method @relation(fields: [method_id], references: [method_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_method_fk")
+  http_method http_method @relation(fields: [method_id], references: [method_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_method_fk")
   role        role        @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "erm_role_fk")
 
   @@id([endpoint_id, role_id, method_id])
-}
-
-model html_method {
-  method_id            Int                    @id @default(autoincrement())
-  method_name          String                 @db.VarChar(200)
-  endpoint_role_method endpoint_role_method[]
 }
 
 model role {
@@ -65,4 +59,10 @@ model user_role {
   user    user @relation(fields: [user_id], references: [user_id], onUpdate: NoAction)
 
   @@id([user_id, role_id], map: "user_role_pk")
+}
+
+model http_method {
+  method_id            Int                    @id(map: "html_method_pkey") @default(autoincrement())
+  method_name          String                 @db.VarChar(200)
+  endpoint_role_method endpoint_role_method[]
 }

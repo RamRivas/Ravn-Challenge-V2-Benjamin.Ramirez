@@ -25,7 +25,7 @@ export const refreshToken = async (req: Request, res: Response) => {
                 const sessions = await getTokens({ user_id });
                 if (sessions.length > 0) {
                     const newToken = jwt.sign(
-                        { ID_User: decoded },
+                        { user: decodedUser },
                         ACCESS_TOKEN_SECRET,
                         {
                             expiresIn: '10m',

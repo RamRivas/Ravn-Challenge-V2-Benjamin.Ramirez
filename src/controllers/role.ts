@@ -1,9 +1,9 @@
-import { GetAllRoles } from '../models/role';
+import { getRoles } from '../models/role';
 import { Request, Response } from 'express';
 
 export const getAllRolesController = async (_req: Request, res: Response) => {
     try {
-        const result = await GetAllRoles();
+        const result = await getRoles();
 
         return res.json({
             code: 200,

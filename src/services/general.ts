@@ -33,3 +33,7 @@ export const isValidJSON = (possibleJson: string): boolean => {
 // export const isObject = ( possibleObj: any ): boolean => {
 //     return typeof possibleObj === 'object';
 // };
+
+export const isEmptyObject = ( possibleEmptyObject: any ) : boolean => {
+    return Object.keys(possibleEmptyObject).length === 0 && possibleEmptyObject.constructor === Object;
+};
