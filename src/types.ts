@@ -1,10 +1,6 @@
 import {
-    endpoint,
-    endpoint_role_method,
-    http_method,
     // PrismaClient,
     Prisma,
-    role,
     token,
     user,
 } from '@prisma/client';
