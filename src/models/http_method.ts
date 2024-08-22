@@ -4,13 +4,13 @@ import { modelCatchResolver } from '../services/resolver';
 
 const prisma = new PrismaClient();
 
-export const getEndpoint = async ( httpMethodFilter: HttpMethodFilter = {} ) => {
+export const getEndpoint = async (httpMethodFilter: HttpMethodFilter = {}) => {
     try {
-        const result = await prisma.http_method.findMany( {
+        const result = await prisma.http_method.findMany({
             where: {
-                ...httpMethodFilter
-            }
-        } );
+                ...httpMethodFilter,
+            },
+        });
 
         return result;
     } catch (error) {

@@ -1,13 +1,10 @@
-import {
-    // PrismaClient,
-    Prisma,
-    token,
-    user,
-} from '@prisma/client';
+import { PrismaClient, Prisma, token, user } from '@prisma/client';
 // import { DefaultArgs } from '@prisma/client/runtime/library';
 // import { PrismaClientOptions } from '@prisma/client/runtime/library';
 
-// export type PrismaTransactionalClient = Omit<PrismaClient<PrismaClientOptions, never, DefaultArgs>, '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'>;
+export type PrismaTransactionalClient = Parameters<
+    Parameters<PrismaClient['$transaction']>[0]
+>[0];
 export type UserForInsertion = Omit<user, 'user_id' | 'forgot_pwd'>;
 
 export type UserForSignIn = Omit<
@@ -20,10 +17,10 @@ export type EndpointWithHttpMethods = Prisma.endpointGetPayload<{
         endpoint_role_method: {
             include: {
                 http_method: true;
-            }
-        }
-    }
-}>
+            };
+        };
+    };
+}>;
 
 export type RoleWithHttpMethodsAndEndpoints = Prisma.roleGetPayload<{
     include: {
@@ -31,10 +28,10 @@ export type RoleWithHttpMethodsAndEndpoints = Prisma.roleGetPayload<{
             include: {
                 http_method: true;
                 endpoint: true;
-            }
-        }
-    }
-}>
+            };
+        };
+    };
+}>;
 
 export type TokenFilter = Prisma.tokenWhereInput;
 

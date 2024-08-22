@@ -35,13 +35,11 @@ const generateRefreshToken = (user: user): string => {
     }
 };
 
-export const getTokens = async (
-    tokenP: TokenFilter
-): Promise<token[]> => {
+export const getTokens = async (tokenP: TokenFilter): Promise<token[]> => {
     try {
         return await prisma.token.findMany({
             where: {
-                ...tokenP
+                ...tokenP,
             },
         });
     } catch (error) {

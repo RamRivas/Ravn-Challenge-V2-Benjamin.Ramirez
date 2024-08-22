@@ -4,11 +4,13 @@ import { RoleFilter, RoleWithHttpMethodsAndEndpoints } from '../types';
 
 const prisma = new PrismaClient();
 
-export const getRoles = async ( roleFilter: RoleFilter = {} ): Promise<RoleWithHttpMethodsAndEndpoints[]> => {
+export const getRoles = async (
+    roleFilter: RoleFilter = {}
+): Promise<RoleWithHttpMethodsAndEndpoints[]> => {
     try {
-        const result = await prisma.role.findMany( {
+        const result = await prisma.role.findMany({
             where: {
-                ...roleFilter
+                ...roleFilter,
             },
             include: {
                 endpoint_role_method: {
@@ -16,9 +18,9 @@ export const getRoles = async ( roleFilter: RoleFilter = {} ): Promise<RoleWithH
                         http_method: true,
                         endpoint: true,
                     },
-                }
-            }
-        } );
+                },
+            },
+        });
 
         return result;
     } catch (error) {
