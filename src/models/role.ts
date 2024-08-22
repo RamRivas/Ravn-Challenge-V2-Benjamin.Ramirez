@@ -1,12 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { modelCatchResolver } from '../services/resolver';
-// import { EndpointRoleMethodJoined, RoleFilter } from '../types';
-import { RoleFilter } from '../types';
+import { RoleFilter, RoleWithHttpMethodsAndEndpoints } from '../types';
 
 const prisma = new PrismaClient();
 
-// export const getRoles = async ( roleFilter: RoleFilter = {} ): Promise<Array< EndpointRoleMethodJoined | role >>  => {
-export const getRoles = async ( roleFilter: RoleFilter = {} )  => {
+export const getRoles = async ( roleFilter: RoleFilter = {} ): Promise<RoleWithHttpMethodsAndEndpoints[]> => {
     try {
         const result = await prisma.role.findMany( {
             where: {

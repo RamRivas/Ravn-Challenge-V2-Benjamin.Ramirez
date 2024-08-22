@@ -19,15 +19,26 @@ export type UserForSignIn = Omit<
     'user_id' | 'role_id' | 'mail_address' | 'forgot_pwd'
 >;
 
-export type EndpointJoined = {
-    endpoint_role_method: EndpointRoleMethodJoined & endpoint_role_method;
-} & endpoint;
+export type EndpointWithHttpMethods = Prisma.endpointGetPayload<{
+    include: {
+        endpoint_role_method: {
+            include: {
+                http_method: true;
+            }
+        }
+    }
+}>
 
-export type EndpointRoleMethodJoined = {
-    http_method?: Partial<http_method>;
-    endpoint?: Partial<endpoint>;
-    role?: Partial<role>;
-} & Partial<endpoint_role_method>
+export type RoleWithHttpMethodsAndEndpoints = Prisma.roleGetPayload<{
+    include: {
+        endpoint_role_method: {
+            include: {
+                http_method: true;
+                endpoint: true;
+            }
+        }
+    }
+}>
 
 export type TokenFilter = Prisma.tokenWhereInput;
 
