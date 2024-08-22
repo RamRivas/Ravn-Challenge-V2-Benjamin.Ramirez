@@ -66,3 +66,14 @@ model http_method {
   method_name          String                 @db.VarChar(200)
   endpoint_role_method endpoint_role_method[]
 }
+
+model product {
+  product_id          Int       @id @default(autoincrement())
+  product_name        String
+  product_description String
+  product_image_path  String?
+  product_stock       Int
+  product_status      String    @default("1") @db.Bit(1)
+  creation_date       DateTime  @default(now()) @db.Timestamp(6)
+  modification_date   DateTime? @db.Timestamp(6)
+}
