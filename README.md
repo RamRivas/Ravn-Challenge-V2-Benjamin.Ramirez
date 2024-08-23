@@ -1,8 +1,8 @@
 # Ravn-Challenge-V2-Benjamin.Ramirez
 
-Step 1: Execute `npm i`
+**Step 1**: Execute `npm i`
 
-STEP 2: Ceate your environment variables on a ".env" named file
+**STEP 2**: Ceate your environment variables on a ".env" named file
 
 Here are some examples:
 
@@ -17,6 +17,6 @@ ACCESS_TOKEN_SECRET=<secretstringforencryptingaccesstokens>
 REFRESH_TOKEN_SECRET=<secretstringforencryptingrefreshtokens>
 ```
 
-STEP 3: Execute a restore in pgAdmin from the file tiny_store_dump.sql for default records in the database
+**STEP 3**: Execute a restore in pgAdmin from the file tiny_store_dump.sql for default records in the database
 
-STEP 4: Execute `npm run dev` or `npm start` for running the server
+**STEP 4**: Execute `npm run dev` or `npm start` for running the server
