@@ -27,23 +27,31 @@ export const verifyEndpointAccess = async (
                 if (http_methodAccess) {
                     next();
                 } else {
-                    res.status(405).send(
-                        'The session owner has not access to this request'
-                    );
+                    res.status(405).json({
+                        code: 405,
+                        message: 'The session owner has not access to this request'
+                    });
                 }
             } else {
-                res.status(405).send(
-                    'The session owner has not access to this request'
-                );
+                res.status(405).json({
+                    code: 405,
+                    message: 'The session owner has not access to this request'
+                });
             }
         } else {
-            res.status(401).send('The session owner has not been verified');
+            res.status(401).json({
+                code: 401,
+                message: 'The session owner has not been verified'
+            });
         }
     } catch (error) {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).send('Unexpected error');
+            res.status(500).json({
+                code: 500,
+                message: 'Unexpected error'
+            });
         }
     }
 };

@@ -111,13 +111,15 @@ export const signUser = async (user: user, tx: any): Promise<Credentials> => {
         const session = await insertToken(token, tx);
 
         return {
+            success: true,
+            message: 'Session created successfully',
             accessToken,
             refreshToken,
             session,
         };
     } catch (error) {
         if (error instanceof Error) {
-            return modelCatchResolver(error);
+            throw error;
         } else {
             throw new Error('Unexpected error');
         }

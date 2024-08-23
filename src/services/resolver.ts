@@ -6,7 +6,7 @@ const { CTX } = config;
 
 export const transactionResolver = (result: any): any => {
     if (CTX === 'test') {
-        throw new Error(JSON.stringify({ success: true, CTX, result }));
+        throw new Error(JSON.stringify({ CTX, ...result }));
     }
     return result;
 };
@@ -28,17 +28,16 @@ export const modelCatchResolver = (obj: Error): any => {
 };
 
 export const controllerCatchResolver = (obj: Error, res: Response) => {
-    if (CTX === 'test') {
-        // console.log( obj.message );
-        if (isValidJSON(obj.message)) {
-            const customError = JSON.parse(obj.message);
-            const { code } = customError;
-            res.status(code).json(customError);
+    if (isValidJSON(obj.message)) {
+        const customError = JSON.parse(obj.message);
+        const { code } = customError;
+        if (CTX === 'test') {
+            res.status(code).json({ CTX, ...customError } );
             return;
         } else {
-            res.status(500).send(obj.message);
+            res.status(code).json({...customError});
         }
     } else {
-        res.status(500).send(obj.message);
+        res.status(500).json( { code: 500, message: obj.message } );
     }
 };

@@ -49,23 +49,20 @@ export type HttpMethodSelect = Prisma.http_methodSelect;
 
 export type EndpointRoleMethodFilter = Prisma.endpoint_role_methodWhereInput;
 
-export type SignInResponse = Partial<Credentials> & {
-    success: boolean;
-    message: string;
-    forgot_pwd?: string;
-};
+// export type SignInResponse = Partial<Credentials> & {
+//     success: boolean;
+//     message: string;
+//     forgot_pwd?: string;
+// };
 
-export type VerifiedUser = Omit<SignInResponse, 'message'> & {
-    user?: user;
-};
 
 export interface UpdateOrDeleteResult {
     rowsAffected: number;
 }
 
 export type TokenForInsertion = Omit<
-    token,
-    'token_id' | 'token_status' | 'destroy_date'
+token,
+'token_id' | 'token_status' | 'destroy_date'
 >;
 
 export interface JwtPayload {
@@ -77,14 +74,25 @@ export interface JwtPayload {
 export interface ProcessEnv {
     PORT: string;
     CTX: string;
-    SALT_ROUNDS: number;
+    SALT_ROUNDS: string;
     SENDER_EMAIL: string;
     SENDER_PWD: string;
     ACCESS_TOKEN_SECRET: string;
     REFRESH_TOKEN_SECRET: string;
 }
 
-export interface Credentials {
+export interface ModelResponse {
+    success: boolean;
+    message: string;
+}
+
+export type VerifiedUser = Omit<ModelResponse, 'message'> & {
+    user?: user;
+};
+
+export type SignInResponse = Partial<Omit<Credentials, 'session'>>;
+
+export interface Credentials extends ModelResponse {
     accessToken: string;
     refreshToken: string;
     session: token;

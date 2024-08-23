@@ -29,9 +29,9 @@ export const signUpController = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).send(error.message);
+            res.status(400).json( { code: 400, message: error.message } );
         } else {
-            res.status(400).send('Unexpected error');
+            res.status(500).json( { code: 500, message: 'Unexpected error' } );
         }
     }
 };
@@ -39,23 +39,25 @@ export const signUpController = async (req: Request, res: Response) => {
 export const signInController = async (req: Request, res: Response) => {
     try {
         const signInSubject = await parseUserForSignIn(req.body);
-        const { message, accessToken, refreshToken } = await signIn(
+        const result = await signIn(
             signInSubject
         );
 
-        res.status(200).json({
-            code: 200,
-            message,
-            result: {
-                accessToken,
-                refreshToken,
-            },
-        });
+        const { success, message } = result;
+
+        if( !success ) {
+            throw new Error( JSON.stringify( { code: 400, message } ) );
+        } else {
+            res.status(200).json({
+                code: 200,
+                ...result
+            });
+        }
     } catch (error) {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(400).send('Unexpected error');
+            res.status(500).json( { code: 500, message: 'Unexpected error' } );
         }
     }
 };
@@ -103,9 +105,12 @@ export const forgotPassword = async (req: Request, res: Response) => {
         }
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).send(error.message);
+            res.status(400).json({
+                code: 400,
+                message: error.message
+            });
         } else {
-            res.status(400).send('Unexpected error');
+            res.status(500).json( { code: 500, message: 'Unexpected error' } );
         }
     }
 };
@@ -147,21 +152,19 @@ export const logOut = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(400).send('Unexpected error');
+            res.status(500).json( { code: 500, message: 'Unexpected error' } );
         }
     }
 };
 
 export const logOutNoAuth = async (req: Request, res: Response) => {
     try {
-        const {
-            body: { user_name, pwd },
-        } = req;
+        const signInSubject = await parseUserForSignIn(req.body);
 
         const { code, message, result } = await prisma.$transaction(
             async (tx): Promise<ControllerResponse> => {
                 const { success, user: verifiedUser } = await verifyPassword(
-                    { user_name, pwd },
+                    signInSubject,
                     tx
                 );
 
@@ -200,7 +203,10 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).send('Unexpected error');
+            res.status(500).json({
+                code: 500,
+                message: 'Unexpected error'
+            });
         }
     }
 };

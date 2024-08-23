@@ -1,10 +1,15 @@
 import { getRoles } from '../../src/models/role';
-import { Role } from '../../src/types';
 
 describe('Role model', () => {
     describe('getRoles', () => {
         test('With 1 or more records in the table', async () => {
-            const result: Array<Role> = await getRoles();
+            const result = await getRoles();
+            expect(result.length).toBeGreaterThan(0);
+        });
+    });
+    describe('getRoles with filte params', () => {
+        test('With 1 or more records in the table', async () => {
+            const result = await getRoles({});
             expect(result.length).toBeGreaterThan(0);
         });
     });

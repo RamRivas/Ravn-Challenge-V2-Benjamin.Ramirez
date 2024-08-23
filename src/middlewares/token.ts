@@ -18,11 +18,17 @@ export const verifyToken = (
 
         const token = authorization?.split(' ')[1];
         if (!token || token?.length === 0) {
-            res.status(401).send('No token provided!');
+            res.status(401).json({
+                code: 401,
+                message: 'No token provided!'
+            });
         } else {
             jwt.verify(token, ACCESS_TOKEN_SECRET, async (error, decoded) => {
                 if (error) {
-                    res.status(403).send('Forbidden');
+                    res.status(403).json({
+                        code: 403,
+                        message: 'Forbidden'
+                    });
                 } else if (decoded && typeof decoded === 'object') {
                     const { user: decodedUser } = decoded;
                     const { user_id } = decodedUser;
@@ -32,9 +38,10 @@ export const verifyToken = (
                         req.user = decodedUser;
                         next();
                     } else {
-                        res.status(401).send(
-                            'The given token is expired or does not have active sessions'
-                        );
+                        res.status(401).json({
+                            code: 401,
+                            message: 'The given token is expired or does not have active sessions'
+                        });
                     }
                 } else {
                     throw new Error('Decoded user is not a valid JSON');
@@ -45,7 +52,10 @@ export const verifyToken = (
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).send('Unexpected error');
+            res.status(500).json({
+                code: 500,
+                message: 'Unexpected error'
+            });
         }
     }
 };

@@ -126,14 +126,9 @@ export const verifyPassword = async (
                 user: result,
             };
         } else {
-            throw new Error(
-                JSON.stringify({
-                    code: 400,
-                    message:
-                        // eslint-disable-next-line quotes
-                        'The given username or password is not correct',
-                })
-            );
+            return {
+                success: false
+            };
         }
     } catch (error) {
         if (error instanceof Error) {
@@ -159,16 +154,16 @@ export const signIn = async (
                         userFromCredentials,
                         tx
                     );
-                    return {
+                    return ( transactionResolver( {
                         success,
                         message: 'Now you are logged in',
                         accessToken,
                         refreshToken,
-                    };
+                    } ) );
                 } else {
                     throw new Error(
                         JSON.stringify({
-                            code: 400,
+                            success: false,
                             message:
                                 'The given username or password is not correct',
                         })
@@ -178,7 +173,7 @@ export const signIn = async (
         );
     } catch (error) {
         if (error instanceof Error) {
-            throw error;
+            return modelCatchResolver( error );
         } else {
             throw new Error('Unexpected error');
         }

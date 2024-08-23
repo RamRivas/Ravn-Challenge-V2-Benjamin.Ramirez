@@ -11,9 +11,9 @@ export const getAllRolesController = async (_req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error) {
-            return res.status(400).send(error.message);
+            return res.status(400).json( { code: 400, message: error.message } );
         } else {
-            return res.status(400).send('Unexpected error');
+            return res.status(500).json( { code: 500, message: 'Unexpected error' } );
         }
     }
 };
