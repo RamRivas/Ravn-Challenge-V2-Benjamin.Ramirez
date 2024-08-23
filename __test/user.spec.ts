@@ -147,11 +147,52 @@ describe('User', () => {
 
             const response = await agent.post(`${baseUrl}/signUp`).send(body);
 
-            console.log(response.body);
             expect(response.status).toBe(200);
             expect(response.body.message).toBe(
                 'You have signed up in "Tiny Store"'
             );
         });
+
     });
+    describe( 'logOut', () => {
+        test( 'When access_token is not provided', async () => {
+            const response = await agent.delete(`${baseUrl}/logOut`);
+
+            expect(response.status).toBe(401);
+            expect(response.body.message).toBe(
+                'No token provided!'
+            );
+        } );
+        
+        test( 'When access_token is not valid', async () => {
+            const response = await agent.delete(`${baseUrl}/logOut`).set('Authorization', 'Bearer YellowSubmarine');
+
+            expect(response.status).toBe(403);
+            expect(response.body.message).toBe(
+                'Forbidden'
+            );
+        } );
+
+        test( 'When access_token is expired', async () => {
+            const response = await agent.delete(`${baseUrl}/logOut`).set('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjEyLCJ1c2VyX25hbWUiOiJicmFtaXJleiIsInB3ZCI6IiQyYiQxMCRHME1ZNk9hbko3SldUcUw4Ujc1US8uTTlkVnBGbFUuZDdHeVJ4eDVVMjhSaW1weTh2bUp2LiIsInJvbGVfaWQiOjEsImZvcmdvdF9wd2QiOiIwIiwibWFpbF9hZGRyZXNzIjoicmFtYmVucmlhbEBnbWFpbC5jb20ifSwiaWF0IjoxNzI0Mzg4ODc5LCJleHAiOjE3NTU0OTI4Nzl9.7VxEvQ1SPO7WN9oUlGWGtw72bo8g9oudCATqgFLPqIk');
+
+            expect(response.status).toBe(403);
+            expect(response.body.message).toBe(
+                'Forbidden'
+            );
+        } );
+
+        // test( 'When logout is executed successfully', async () => {
+        //     process.env.CTX = 'dev';
+            
+
+        //     const response = await agent.delete(`${baseUrl}/logOut`).set('Authorization', 'Bearer ');
+
+        //     expect(response.status).toBe(403);
+        //     expect(response.body.message).toBe(
+        //         'Forbidden'
+        //     );
+        //     process.env.CTX = 'test';
+        // } );
+    } );
 });

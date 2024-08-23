@@ -1,0 +1,350 @@
+{
+	"info": {
+		"_postman_id": "a1b9891f-1171-406a-939a-d76d3f1fac0a",
+		"name": "tiny_store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8442366"
+	},
+	"item": [
+		{
+			"name": "role/",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/role/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"role",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/signIn",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"bramirez\",\r\n    \"pwd\": \"456\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/user/signIn",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"signIn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/logOutNoAuth",
+			"request": {
+				"auth": {
+					"type": "oauth1",
+					"oauth1": [
+						{
+							"key": "addParamsToHeader",
+							"value": true,
+							"type": "boolean"
+						},
+						{
+							"key": "signatureMethod",
+							"value": "HMAC-SHA256",
+							"type": "string"
+						},
+						{
+							"key": "version",
+							"value": "1.0",
+							"type": "string"
+						},
+						{
+							"key": "addEmptyParamsToSign",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"bramirez\",\r\n    \"pwd\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/user/logOutNoAuth",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"logOutNoAuth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/logOut",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjEyLCJ1c2VyX25hbWUiOiJicmFtaXJleiIsInB3ZCI6IiQyYiQxMCRHME1ZNk9hbko3SldUcUw4Ujc1US8uTTlkVnBGbFUuZDdHeVJ4eDVVMjhSaW1weTh2bUp2LiIsInJvbGVfaWQiOjEsImZvcmdvdF9wd2QiOiIwIiwibWFpbF9hZGRyZXNzIjoicmFtYmVucmlhbEBnbWFpbC5jb20ifSwiaWF0IjoxNzI0MTI2NjcxLCJleHAiOjE3MjQxMjcyNzF9.PFBDDuPCeWGMq1Oua6m_dr3YXC7bIZKpqx0IVMSS7LM",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{URL}}/api/user/logOut",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"logOut"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "token/",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfaWQiOjEyLCJ1c2VyX25hbWUiOiJicmFtaXJleiIsInB3ZCI6IiQyYiQxMCRHME1ZNk9hbko3SldUcUw4Ujc1US8uTTlkVnBGbFUuZDdHeVJ4eDVVMjhSaW1weTh2bUp2LiIsInJvbGVfaWQiOjEsImZvcmdvdF9wd2QiOiIwIiwibWFpbF9hZGRyZXNzIjoicmFtYmVucmlhbEBnbWFpbC5jb20ifSwiaWF0IjoxNzI0MTMxMTMzLCJleHAiOjE3NTUyMzUxMzN9.TEdI1sh8obWsXZqlwEyp0bhTfhxhjT_4KgR5PWaOkgY\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/token/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"token",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product/",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"product_name\": \"LEJIA MAXISOL\",\r\n        \"product_description\": \"Producto químico de limpieza y lavado\",\r\n        \"product_stock\": 156\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/product/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"product",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/signUp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_name\": \"mpayez\",\r\n    \"mail_address\": \"mpayez@gmail.com\",\r\n    \"pwd\": \"123\",\r\n    \"role\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/api/user/signUp",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"api",
+						"user",
+						"signUp"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "user/signUp",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_name\": \"jramirez\",\r\n    \"mail_address\": \"rambenrial@gmail.com\",\r\n    \"pwd\": \"123\",\r\n    \"role\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/user/signUp",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"signUp"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "33"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"21-zroW+x1xzFDj8aiY4VxFy2em+mA\""
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 23 Aug 2024 03:56:09 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "The given username already exists"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
