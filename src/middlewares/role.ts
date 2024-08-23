@@ -29,19 +29,20 @@ export const verifyEndpointAccess = async (
                 } else {
                     res.status(405).json({
                         code: 405,
-                        message: 'The session owner has not access to this request'
+                        message:
+                            'The session owner has not access to this request',
                     });
                 }
             } else {
                 res.status(405).json({
                     code: 405,
-                    message: 'The session owner has not access to this request'
+                    message: 'The session owner has not access to this request',
                 });
             }
         } else {
             res.status(401).json({
                 code: 401,
-                message: 'The session owner has not been verified'
+                message: 'The session owner has not been verified',
             });
         }
     } catch (error) {
@@ -50,7 +51,7 @@ export const verifyEndpointAccess = async (
         } else {
             res.status(500).json({
                 code: 500,
-                message: 'Unexpected error'
+                message: 'Unexpected error',
             });
         }
     }

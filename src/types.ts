@@ -55,14 +55,13 @@ export type EndpointRoleMethodFilter = Prisma.endpoint_role_methodWhereInput;
 //     forgot_pwd?: string;
 // };
 
-
 export interface UpdateOrDeleteResult {
     rowsAffected: number;
 }
 
 export type TokenForInsertion = Omit<
-token,
-'token_id' | 'token_status' | 'destroy_date'
+    token,
+    'token_id' | 'token_status' | 'destroy_date'
 >;
 
 export interface JwtPayload {

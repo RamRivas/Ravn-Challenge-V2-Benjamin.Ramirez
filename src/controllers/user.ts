@@ -29,9 +29,10 @@ export const signUpController = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error) {
-            res.status(400).json( { code: 400, message: error.message } );
+            res.status(400).json({ code: 400, message: error.message });
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };
@@ -39,25 +40,24 @@ export const signUpController = async (req: Request, res: Response) => {
 export const signInController = async (req: Request, res: Response) => {
     try {
         const signInSubject = await parseUserForSignIn(req.body);
-        const result = await signIn(
-            signInSubject
-        );
+        const result = await signIn(signInSubject);
 
         const { success, message } = result;
 
-        if( !success ) {
-            throw new Error( JSON.stringify( { code: 400, message } ) );
+        if (!success) {
+            throw new Error(JSON.stringify({ code: 400, message }));
         } else {
             res.status(200).json({
                 code: 200,
-                ...result
+                ...result,
             });
         }
     } catch (error) {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };
@@ -107,10 +107,11 @@ export const forgotPassword = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             res.status(400).json({
                 code: 400,
-                message: error.message
+                message: error.message,
             });
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };
@@ -152,7 +153,8 @@ export const logOut = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };
@@ -205,7 +207,7 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
         } else {
             res.status(500).json({
                 code: 500,
-                message: 'Unexpected error'
+                message: 'Unexpected error',
             });
         }
     }

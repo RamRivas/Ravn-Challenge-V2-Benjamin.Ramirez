@@ -32,12 +32,12 @@ export const controllerCatchResolver = (obj: Error, res: Response) => {
         const customError = JSON.parse(obj.message);
         const { code } = customError;
         if (CTX === 'test') {
-            res.status(code).json({ CTX, ...customError } );
+            res.status(code).json({ CTX, ...customError });
             return;
         } else {
-            res.status(code).json({...customError});
+            res.status(code).json({ ...customError });
         }
     } else {
-        res.status(500).json( { code: 500, message: obj.message } );
+        res.status(500).json({ code: 500, message: obj.message });
     }
 };

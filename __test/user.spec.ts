@@ -1,4 +1,4 @@
-import { main } from '../../src';
+import { main } from '../src';
 import supertest from 'supertest';
 
 const agent = supertest.agent(main());
@@ -63,12 +63,63 @@ describe('User', () => {
                 role: 1,
             };
 
-            const response = await agent
-                .post( `${baseUrl}/signUp` )
-                .send( body );
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
 
             expect(response.status).toBe(400);
-            expect(response.body.message).toBe('The given username already exists');
+            expect(response.body.message).toBe(
+                'The given username already exists'
+            );
+        });
+
+        test('When user_name has not a correct value', async () => {
+            const body = {
+                user_name: 4876876,
+                mail_address: 'rambenrial@gmail.com',
+                pwd: '123',
+                role: 1,
+            };
+
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
+
+            // console.log( response.body );
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe(
+                'Incorrect format or missing user name'
+            );
+        });
+
+        test('When mail_address has not a correct value', async () => {
+            const body = {
+                user_name: 'jbenavidez',
+                mail_address: 4578632,
+                pwd: '123',
+                role: 1,
+            };
+
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
+
+            // console.log( response.body );
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe(
+                'The given email address is not valid'
+            );
+        });
+
+        test('When pwd has not a correct value', async () => {
+            const body = {
+                user_name: 'jbenavidez',
+                mail_address: 'jbenavidez@gmail.com',
+                pwd: 123,
+                role: 1,
+            };
+
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
+
+            // console.log( response.body );
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe(
+                'Incorrect format or missing pwd'
+            );
         });
     });
 });

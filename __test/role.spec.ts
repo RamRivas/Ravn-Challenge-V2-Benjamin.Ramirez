@@ -1,4 +1,4 @@
-import { getRoles } from '../../src/models/role';
+import { getRoles } from '../src/models/role';
 
 describe('Role model', () => {
     describe('getRoles', () => {

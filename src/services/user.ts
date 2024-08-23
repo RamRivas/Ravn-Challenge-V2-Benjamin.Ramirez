@@ -24,6 +24,7 @@ const parseUsername = async (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -54,6 +55,7 @@ export const isNotAnExistingUserName = async (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -63,7 +65,6 @@ export const isACorrectEmailAddress = (
     emailAddressFromRequest: string
 ): string => {
     try {
-        console.log(emailAddressFromRequest);
         // eslint-disable-next-line no-useless-escape
         if (
             !/^\w+([\\.-]?\\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/.test(
@@ -78,6 +79,7 @@ export const isACorrectEmailAddress = (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -97,6 +99,7 @@ export const parseEmailAddress = (emailAddressFromRequest: string): string => {
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -117,6 +120,7 @@ export const parseUserForInsertion = async (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -135,6 +139,7 @@ export const parseUserForSignIn = async (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }

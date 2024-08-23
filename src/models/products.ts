@@ -20,6 +20,7 @@ export const createProduct = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -41,6 +42,7 @@ export const getProduct = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -85,6 +87,7 @@ export const updateProduct = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }

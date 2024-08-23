@@ -29,6 +29,7 @@ export const send = async (body: Options): Promise<SentMessageInfo> => {
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }

@@ -20,14 +20,14 @@ export const verifyToken = (
         if (!token || token?.length === 0) {
             res.status(401).json({
                 code: 401,
-                message: 'No token provided!'
+                message: 'No token provided!',
             });
         } else {
             jwt.verify(token, ACCESS_TOKEN_SECRET, async (error, decoded) => {
                 if (error) {
                     res.status(403).json({
                         code: 403,
-                        message: 'Forbidden'
+                        message: 'Forbidden',
                     });
                 } else if (decoded && typeof decoded === 'object') {
                     const { user: decodedUser } = decoded;
@@ -40,7 +40,8 @@ export const verifyToken = (
                     } else {
                         res.status(401).json({
                             code: 401,
-                            message: 'The given token is expired or does not have active sessions'
+                            message:
+                                'The given token is expired or does not have active sessions',
                         });
                     }
                 } else {
@@ -54,7 +55,7 @@ export const verifyToken = (
         } else {
             res.status(500).json({
                 code: 500,
-                message: 'Unexpected error'
+                message: 'Unexpected error',
             });
         }
     }

@@ -33,7 +33,8 @@ export const createProduct = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };

@@ -13,7 +13,7 @@ export const refreshToken = async (req: Request, res: Response) => {
         } = req;
 
         if (!token || token?.length === 0) {
-            res.status(401).json({ code: 401, message: 'No token provided!'});
+            res.status(401).json({ code: 401, message: 'No token provided!' });
             return;
         } else {
             const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
@@ -37,13 +37,14 @@ export const refreshToken = async (req: Request, res: Response) => {
                 } else {
                     res.status(401).json({
                         code: 401,
-                        message: 'The given token is expired or does not have active sessions'
+                        message:
+                            'The given token is expired or does not have active sessions',
                     });
                 }
             } else {
                 res.status(403).json({
                     code: 403,
-                    message: 'Forbidden!'
+                    message: 'Forbidden!',
                 });
             }
         }
@@ -51,7 +52,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
-            res.status(500).json( { code: 500, message: 'Unexpected error' } );
+            /* istanbul ignore next */
+            res.status(500).json({ code: 500, message: 'Unexpected error' });
         }
     }
 };

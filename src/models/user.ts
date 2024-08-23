@@ -28,6 +28,7 @@ export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -40,6 +41,7 @@ export const getAllUsers = async (): Promise<user[]> => {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -58,6 +60,7 @@ export const filterUsers = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -102,6 +105,7 @@ export const updateUser = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -127,13 +131,14 @@ export const verifyPassword = async (
             };
         } else {
             return {
-                success: false
+                success: false,
             };
         }
     } catch (error) {
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -154,12 +159,12 @@ export const signIn = async (
                         userFromCredentials,
                         tx
                     );
-                    return ( transactionResolver( {
+                    return transactionResolver({
                         success,
                         message: 'Now you are logged in',
                         accessToken,
                         refreshToken,
-                    } ) );
+                    });
                 } else {
                     throw new Error(
                         JSON.stringify({
@@ -173,8 +178,9 @@ export const signIn = async (
         );
     } catch (error) {
         if (error instanceof Error) {
-            return modelCatchResolver( error );
+            return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }

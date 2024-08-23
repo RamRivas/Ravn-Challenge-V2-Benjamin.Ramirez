@@ -16,6 +16,7 @@ export const generateAccessToken = (user: user): string => {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -30,6 +31,7 @@ const generateRefreshToken = (user: user): string => {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -46,6 +48,7 @@ export const getTokens = async (tokenP: TokenFilter): Promise<token[]> => {
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -65,6 +68,7 @@ export const insertToken = async (
         if (error instanceof Error) {
             throw modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -85,6 +89,7 @@ export const destroyToken = async (
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -121,6 +126,7 @@ export const signUser = async (user: user, tx: any): Promise<Credentials> => {
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }

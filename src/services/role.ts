@@ -15,6 +15,7 @@ export const isValidRole = async (
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
@@ -33,6 +34,7 @@ export const parseRole = async (roleFromRequest: any): Promise<number> => {
         if (error instanceof Error) {
             throw error;
         } else {
+            /* istanbul ignore next */
             throw new Error('Unexpected error');
         }
     }
