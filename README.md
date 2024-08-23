@@ -1,6 +1,6 @@
 # Ravn-Challenge-V2-Benjamin.Ramirez
 
-**Step 1**: Execute `npm i`
+**STEP 1**: Execute `npm i`
 
 **STEP 2**: Ceate your environment variables on a ".env" named file
 
