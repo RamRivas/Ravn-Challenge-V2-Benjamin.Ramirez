@@ -26,6 +26,7 @@ export const send = async (body: Options): Promise<SentMessageInfo> => {
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {

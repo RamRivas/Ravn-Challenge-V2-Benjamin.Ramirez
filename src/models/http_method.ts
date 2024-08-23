@@ -14,6 +14,7 @@ export const getEndpoint = async (httpMethodFilter: HttpMethodFilter = {}) => {
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {

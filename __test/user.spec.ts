@@ -121,5 +121,37 @@ describe('User', () => {
                 'Incorrect format or missing pwd'
             );
         });
+
+        test('When role has not a correct value', async () => {
+            const body = {
+                user_name: 'jbenavidez',
+                mail_address: 'jbenavidez@gmail.com',
+                pwd: '123',
+                role: '1',
+            };
+
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
+
+            // console.log( response.body );
+            expect(response.status).toBe(400);
+            expect(response.body.message).toBe('The given role does not exist');
+        });
+
+        test('When signUp is executed successfully', async () => {
+            const body = {
+                user_name: 'jbenavidez',
+                mail_address: 'jbenavidez@gmail.com',
+                pwd: '123',
+                role: 1,
+            };
+
+            const response = await agent.post(`${baseUrl}/signUp`).send(body);
+
+            console.log(response.body);
+            expect(response.status).toBe(200);
+            expect(response.body.message).toBe(
+                'You have signed up in "Tiny Store"'
+            );
+        });
     });
 });

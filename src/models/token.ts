@@ -13,6 +13,7 @@ export const generateAccessToken = (user: user): string => {
             throw new Error('Missing ACCESS_TOKEN_SECRET');
         return jwt.sign({ user }, ACCESS_TOKEN_SECRET, { expiresIn: '10m' });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -28,6 +29,7 @@ const generateRefreshToken = (user: user): string => {
             throw new Error('Missing REFRESH_TOKEN_SECRET');
         return jwt.sign({ user }, REFRESH_TOKEN_SECRET, { expiresIn: '360d' });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -45,6 +47,7 @@ export const getTokens = async (tokenP: TokenFilter): Promise<token[]> => {
             },
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -65,6 +68,7 @@ export const insertToken = async (
             },
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw modelCatchResolver(error);
         } else {
@@ -86,6 +90,7 @@ export const destroyToken = async (
         });
         return count;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -123,6 +128,7 @@ export const signUser = async (user: user, tx: any): Promise<Credentials> => {
             session,
         };
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {

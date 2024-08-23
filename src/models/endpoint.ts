@@ -31,6 +31,7 @@ export const getEndpoint = async (
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {

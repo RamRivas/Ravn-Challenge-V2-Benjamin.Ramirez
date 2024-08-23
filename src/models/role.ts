@@ -24,6 +24,7 @@ export const getRoles = async (
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {

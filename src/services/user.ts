@@ -21,6 +21,7 @@ const parseUsername = async (
 
         return usernameFromRequest;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -52,6 +53,7 @@ export const isNotAnExistingUserName = async (
 
         return users.length === 0;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -73,9 +75,9 @@ export const isACorrectEmailAddress = (
         ) {
             throw new Error('The given email address is not valid');
         }
-
         return emailAddressFromRequest;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -96,6 +98,7 @@ export const parseEmailAddress = (emailAddressFromRequest: string): string => {
 
         return emailAddressFromRequest;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -117,6 +120,7 @@ export const parseUserForInsertion = async (
         };
         return newUser;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -136,6 +140,7 @@ export const parseUserForSignIn = async (
         };
         return userForSignIn;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {

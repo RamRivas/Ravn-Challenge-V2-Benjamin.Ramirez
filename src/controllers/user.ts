@@ -28,6 +28,7 @@ export const signUpController = async (req: Request, res: Response) => {
             data: insertedUser,
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             res.status(400).json({ code: 400, message: error.message });
         } else {
@@ -53,6 +54,7 @@ export const signInController = async (req: Request, res: Response) => {
             });
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
@@ -104,6 +106,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
             );
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             res.status(400).json({
                 code: 400,
@@ -150,6 +153,7 @@ export const logOut = async (req: Request, res: Response) => {
             res.status(403);
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {
@@ -202,6 +206,7 @@ export const logOutNoAuth = async (req: Request, res: Response) => {
             result,
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {

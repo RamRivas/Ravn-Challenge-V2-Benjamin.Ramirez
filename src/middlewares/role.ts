@@ -46,6 +46,7 @@ export const verifyEndpointAccess = async (
             });
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {

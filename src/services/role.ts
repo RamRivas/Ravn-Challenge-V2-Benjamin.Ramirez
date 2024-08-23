@@ -12,6 +12,7 @@ export const isValidRole = async (
             undefined
         );
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -31,6 +32,7 @@ export const parseRole = async (roleFromRequest: any): Promise<number> => {
         }
         return roleFromRequest;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {

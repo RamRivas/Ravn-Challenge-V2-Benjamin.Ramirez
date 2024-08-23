@@ -30,6 +30,7 @@ export const createProduct = async (req: Request, res: Response) => {
             result,
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {

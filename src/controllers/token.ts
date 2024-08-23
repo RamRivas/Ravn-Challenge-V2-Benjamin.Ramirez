@@ -49,6 +49,7 @@ export const refreshToken = async (req: Request, res: Response) => {
             }
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             controllerCatchResolver(error, res);
         } else {

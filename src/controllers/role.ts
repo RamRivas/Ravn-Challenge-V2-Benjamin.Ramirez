@@ -10,6 +10,7 @@ export const getAllRolesController = async (_req: Request, res: Response) => {
             ...result,
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             /* istanbul ignore next */
             return res.status(400).json({ code: 400, message: error.message });

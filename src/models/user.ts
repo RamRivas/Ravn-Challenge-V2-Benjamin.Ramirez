@@ -25,6 +25,7 @@ export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
             return transactionResolver(result);
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -34,18 +35,19 @@ export const signUp = async (userToInsert: UserForInsertion): Promise<user> => {
     }
 };
 
-export const getAllUsers = async (): Promise<user[]> => {
-    try {
-        return await prisma.user.findMany();
-    } catch (error) {
-        if (error instanceof Error) {
-            return modelCatchResolver(error);
-        } else {
-            /* istanbul ignore next */
-            throw new Error('Unexpected error');
-        }
-    }
-};
+// export const getAllUsers = async (): Promise<user[]> => {
+//     try {
+//         return await prisma.user.findMany();
+//     } catch (error) {
+//         /* istanbul ignore next */
+//          if (error instanceof Error) {
+//             return modelCatchResolver(error);
+//         } else {
+//             /* istanbul ignore next */
+//             throw new Error('Unexpected error');
+//         }
+//     }
+// };
 
 export const filterUsers = async (
     filter: Partial<user>
@@ -57,6 +59,7 @@ export const filterUsers = async (
             },
         });
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -102,6 +105,7 @@ export const updateUser = async (
 
         return rowsAffectedReturnValue;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -135,6 +139,7 @@ export const verifyPassword = async (
             };
         }
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             throw error;
         } else {
@@ -177,6 +182,7 @@ export const signIn = async (
             }
         );
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {

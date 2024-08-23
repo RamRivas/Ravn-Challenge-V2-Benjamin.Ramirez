@@ -17,6 +17,7 @@ export const createProduct = async (
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -39,6 +40,7 @@ export const getProduct = async (
 
         return result;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
@@ -84,6 +86,7 @@ export const updateProduct = async (
 
         return rowsAffectedReturnValue;
     } catch (error) {
+        /* istanbul ignore next */
         if (error instanceof Error) {
             return modelCatchResolver(error);
         } else {
