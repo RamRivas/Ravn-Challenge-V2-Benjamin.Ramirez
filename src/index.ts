@@ -21,7 +21,9 @@ export const main = () => {
         res.send('pong');
     });
 
-    CTX === 'dev' && app.use(morgan('dev'));
+    if (CTX === 'test' || CTX === 'dev') {
+        app.use(morgan('dev'));
+    }
 
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);

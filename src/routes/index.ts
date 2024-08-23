@@ -1,6 +1,7 @@
 import user from './user';
 import role from './role';
 import token from './token';
+import product from './product';
 
 const userRoutes = {
     prefix: '/user',
@@ -17,4 +18,9 @@ const tokenRoutes = {
     router: token,
 };
 
-export default [userRoutes, roleRoutes, tokenRoutes];
+const productRoutes = {
+    prefix: '/product',
+    router: product,
+};
+
+export default [userRoutes, roleRoutes, tokenRoutes, productRoutes];

@@ -13,7 +13,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         } = req;
 
         if (!token || token?.length === 0) {
-            return res.status(401).send('No token provided!');
+            res.status(401).send('No token provided!');
+            return;
         } else {
             const decoded = jwt.verify(token, REFRESH_TOKEN_SECRET);
             if (decoded && typeof decoded === 'object') {
@@ -29,24 +30,23 @@ export const refreshToken = async (req: Request, res: Response) => {
                             expiresIn: '10m',
                         }
                     );
-                    return res.status(200).send({
+                    res.status(200).send({
                         accessToken: newToken,
                     });
                 } else {
-                    return res
-                        .status(401)
-                        .send(
-                            'The given token is expired or does not have active sessions'
-                        );
+                    res.status(401).send(
+                        'The given token is expired or does not have active sessions'
+                    );
                 }
+            } else {
+                res.status(403).send('Forbidden!');
             }
         }
-        return res.status(403).send('Forbidden!');
     } catch (error) {
         if (error instanceof Error) {
-            return controllerCatchResolver(error, res);
+            controllerCatchResolver(error, res);
         } else {
-            return res.status(400).send('Unexpected error');
+            res.status(400).send('Unexpected error');
         }
     }
 };

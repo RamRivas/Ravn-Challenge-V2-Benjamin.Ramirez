@@ -33,6 +33,8 @@ export type RoleWithHttpMethodsAndEndpoints = Prisma.roleGetPayload<{
     };
 }>;
 
+export type ProductFilter = Prisma.productWhereInput;
+
 export type TokenFilter = Prisma.tokenWhereInput;
 
 export type RoleFilter = Prisma.roleWhereInput;
