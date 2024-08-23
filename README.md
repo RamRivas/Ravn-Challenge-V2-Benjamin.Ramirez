@@ -6,6 +6,7 @@ STEP 2: Ceate your environment variables on a ".env" named file
 
 Here are some examples:
 
+```
 PORT=3000
 CTX=dev
 SALT_ROUNDS=10
@@ -14,5 +15,8 @@ SENDER_EMAIL=senderemailaddress@gmail.com
 SENDER_PWD=<yoursenderemailaddressfornodemailer>
 ACCESS_TOKEN_SECRET=<secretstringforencryptingaccesstokens>
 REFRESH_TOKEN_SECRET=<secretstringforencryptingrefreshtokens>
+```
 
 STEP 3: Execute a restore from the file tiny_store_dump.sql for default records in the database
+
+STEP 4: Execute `npm run dev` or `npm start` for running the server
