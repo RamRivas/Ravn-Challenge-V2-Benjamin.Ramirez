@@ -17,6 +17,8 @@ ACCESS_TOKEN_SECRET=<secretstringforencryptingaccesstokens>
 REFRESH_TOKEN_SECRET=<secretstringforencryptingrefreshtokens>
 ```
 
-**STEP 3**: Execute a restore in pgAdmin from the file tiny_store_dump.sql for default records in the database
+**STEP 3**: Excute command `npx prisma db push` for migrating all the models on prisma.schema
 
-**STEP 4**: Execute `npm run dev` or `npm start` for running the server
+**STEP 4**: Execute a restore in pgAdmin from the file tiny_store_dump.sql for default records in the database
+
+**STEP 5**: Execute `npm run dev` or `npm start` for running the server
